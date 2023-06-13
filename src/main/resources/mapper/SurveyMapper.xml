@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kinetix.surveyengine.mapper.SurveyMapper">
+  <resultMap id="BaseResultMap" type="com.kinetix.surveyengine.entity.Survey">
+    <!--@mbg.generated-->
+    <!--@Table SURVEY-->
+    <result column="VERSION" jdbcType="DECIMAL" property="version" />
+    <result column="EXCEL" jdbcType="BLOB" property="excel" />
+    <result column="SURVEY_TYPE" jdbcType="DECIMAL" property="surveyType" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    VERSION, EXCEL, SURVEY_TYPE
+  </sql>
+  <insert id="insert" parameterType="com.kinetix.surveyengine.entity.Survey">
+    <!--@mbg.generated-->
+    insert into SURVEY (VERSION, EXCEL, SURVEY_TYPE
+      )
+    values (#{version,jdbcType=DECIMAL}, #{excel,jdbcType=BLOB}, #{surveyType,jdbcType=DECIMAL}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.kinetix.surveyengine.entity.Survey">
+    <!--@mbg.generated-->
+    insert into SURVEY
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="version != null">
+        VERSION,
+      </if>
+      <if test="excel != null">
+        EXCEL,
+      </if>
+      <if test="surveyType != null">
+        SURVEY_TYPE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="version != null">
+        #{version,jdbcType=DECIMAL},
+      </if>
+      <if test="excel != null">
+        #{excel,jdbcType=BLOB},
+      </if>
+      <if test="surveyType != null">
+        #{surveyType,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+
+  <select id="countNum" resultType="java.lang.Integer">
+    SELECT COUNT(*) FROM  SURVEY
+  </select>
+
+</mapper>

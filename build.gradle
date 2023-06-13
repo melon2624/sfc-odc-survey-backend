@@ -1,0 +1,39 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.projectlombok:lombok:1.18.22'
+    implementation 'org.springframework.boot:spring-boot-starter-web:2.6.7'
+    implementation 'org.springframework.boot:spring-boot-starter-freemarker:2.6.7'
+    implementation 'com.alibaba:fastjson:1.2.62'
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
+    implementation 'log4j:log4j:1.2.17'
+    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.1.4'
+    implementation 'org.mybatis:mybatis:3.5.6'
+    implementation files("${projectDir}/src/main/resources/lib/aspose-cells-23.1.jar")
+    implementation files("${projectDir}/src/main/resources/lib/ojdbc8.jar")
+}
+
+
+group 'com.kinetix'
+version '1.0-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from(components.java)
+        }
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
