@@ -2,12 +2,14 @@ package com.kinetix.surveyengine;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @SpringBootApplication
-public class SurveyEngineApplication {
+@EnableTransactionManagement
+public class SurveyBackendApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(SurveyEngineApplication.class, args);
+		SpringApplication.run(SurveyBackendApplication.class, args);
 	}
 
 }

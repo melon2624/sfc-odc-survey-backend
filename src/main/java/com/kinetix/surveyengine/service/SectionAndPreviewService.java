@@ -47,7 +47,7 @@ public class SectionAndPreviewService {
         try {
             Workbook workbook = new Workbook(file.getInputStream());
 
-            Worksheet worksheet = workbook.getWorksheets().get("Mapping");
+            Worksheet worksheet = workbook.getWorksheets().get("Sheet1");
 
             Cells cellCollection = worksheet.getCells();
             int row = cellCollection.getMaxDataRow();

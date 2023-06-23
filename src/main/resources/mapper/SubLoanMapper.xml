@@ -1,0 +1,1044 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kinetix.surveyengine.mapper.SubLoanMapper">
+  <resultMap id="BaseResultMap" type="com.kinetix.surveyengine.entity.SubLoan">
+    <!--@mbg.generated-->
+    <!--@Table YOUR_TABLE_NAME-->
+    <result column="CASE_ID" jdbcType="VARCHAR" property="caseId" />
+    <result column="FORM_TYPE" jdbcType="VARCHAR" property="formType" />
+    <result column="APPL_DATE" jdbcType="TIMESTAMP" property="applDate" />
+    <result column="ASSO_LOAN_ID" jdbcType="VARCHAR" property="assoLoanId" />
+    <result column="CEREF" jdbcType="VARCHAR" property="ceref" />
+    <result column="FEE_RECEIVED_MASTER" jdbcType="VARCHAR" property="feeReceivedMaster" />
+    <result column="FEE_PAYMENT_RECEIPT_DATE" jdbcType="TIMESTAMP" property="feePaymentReceiptDate" />
+    <result column="ACKNOWLEDGING_APPLICATION_RECEIPT_DATE" jdbcType="TIMESTAMP" property="acknowledgingApplicationReceiptDate" />
+    <result column="ACKNOWLEDGING_FEE_PAYMENT_RECEIPT_DATE" jdbcType="TIMESTAMP" property="acknowledgingFeePaymentReceiptDate" />
+    <result column="MEET_PERFORMANCE_PLEDGE" jdbcType="VARCHAR" property="meetPerformancePledge" />
+    <result column="LOAN_AGREE_DATE" jdbcType="TIMESTAMP" property="loanAgreeDate" />
+    <result column="CURRENCY_MASTER" jdbcType="VARCHAR" property="currencyMaster" />
+    <result column="LOAN_FACILITY_AMT" jdbcType="DECIMAL" property="loanFacilityAmt" />
+    <result column="BORROWER" jdbcType="VARCHAR" property="borrower" />
+    <result column="LENDER_NAME_1" jdbcType="VARCHAR" property="lenderName1" />
+    <result column="LENDER_NAME_2" jdbcType="VARCHAR" property="lenderName2" />
+    <result column="LENDER_NAME_3" jdbcType="VARCHAR" property="lenderName3" />
+    <result column="LENDER_NAME_4" jdbcType="VARCHAR" property="lenderName4" />
+    <result column="LENDER_NAME_5" jdbcType="VARCHAR" property="lenderName5" />
+    <result column="LOAN_TYPE_NEWAPP_SUBMISSION" jdbcType="VARCHAR" property="loanTypeNewappSubmission" />
+    <result column="CURRENCY_NEWAPP_SUBMISSION" jdbcType="VARCHAR" property="currencyNewappSubmission" />
+    <result column="LOAN_FACILITY_AMOUNT_NEWAPP_SUBMISSION" jdbcType="DECIMAL" property="loanFacilityAmountNewappSubmission" />
+    <result column="INTEREST_RATE_NEWAPP_SUBMISSION" jdbcType="VARCHAR" property="interestRateNewappSubmission" />
+    <result column="DURATION_NEWAPP_SUBMISSION" jdbcType="VARCHAR" property="durationNewappSubmission" />
+    <result column="APPL_STATUS_NEWAPP" jdbcType="VARCHAR" property="applStatusNewapp" />
+    <result column="INPRINCIPLE_APPL_LETTER_ISSUED_DATE_NEWAPP" jdbcType="TIMESTAMP" property="inprincipleApplLetterIssuedDateNewapp" />
+    <result column="FINAL_APPL_LETTER_DATE_NEWAPP" jdbcType="TIMESTAMP" property="finalApplLetterDateNewapp" />
+    <result column="REJECT_LETTER_DATE_NEWAPP" jdbcType="TIMESTAMP" property="rejectLetterDateNewapp" />
+    <result column="RETURN_LETTER_DATE_NEWAPP" jdbcType="TIMESTAMP" property="returnLetterDateNewapp" />
+    <result column="APPL_REJECT_WITHDL_DATE_NEWAPP" jdbcType="TIMESTAMP" property="applRejectWithdlDateNewapp" />
+    <result column="LOAN_AGREEMENT_DATE_NEWAPP" jdbcType="TIMESTAMP" property="loanAgreementDateNewapp" />
+    <result column="LOAN_EXPIRY_DATE_NEWAPP" jdbcType="TIMESTAMP" property="loanExpiryDateNewapp" />
+    <result column="APPROVED_CURRENCY_NEWAPP" jdbcType="VARCHAR" property="approvedCurrencyNewapp" />
+    <result column="APPROVED_LOAN_AMOUNT_FACILITY_NEWAPP" jdbcType="VARCHAR" property="approvedLoanAmountFacilityNewapp" />
+    <result column="APPROVED_INTEREST_RATE_NEWAPP" jdbcType="VARCHAR" property="approvedInterestRateNewapp" />
+    <result column="APPROVED_DURATION_NEWAPP" jdbcType="VARCHAR" property="approvedDurationNewapp" />
+    <result column="DATE_OF_DRAWDOWN_SUBMISSION" jdbcType="TIMESTAMP" property="dateOfDrawdownSubmission" />
+    <result column="CURRENCY_DRAWDOWN_SUBMISSION" jdbcType="VARCHAR" property="currencyDrawdownSubmission" />
+    <result column="DRAWDOWN_AMT_SUBMISSION" jdbcType="VARCHAR" property="drawdownAmtSubmission" />
+    <result column="APPL_STATUS_DRAWDOWN" jdbcType="VARCHAR" property="applStatusDrawdown" />
+    <result column="CONFIRM_LETTER_ISSUE_DATE_DRAWDOWN" jdbcType="TIMESTAMP" property="confirmLetterIssueDateDrawdown" />
+    <result column="REJECT_LETTER_DATE_DRAWDOWN" jdbcType="TIMESTAMP" property="rejectLetterDateDrawdown" />
+    <result column="RETURN_LETTER_DATE_DRAWDOWN" jdbcType="TIMESTAMP" property="returnLetterDateDrawdown" />
+    <result column="APPL_REJECT_WITHDL_DATE_DRAWDOWN" jdbcType="TIMESTAMP" property="applRejectWithdlDateDrawdown" />
+    <result column="APPROVED_DATE_OF_DRAWDOWN" jdbcType="TIMESTAMP" property="approvedDateOfDrawdown" />
+    <result column="CURRENCY_APPROVED_DRAWDOWN" jdbcType="VARCHAR" property="currencyApprovedDrawdown" />
+    <result column="APPROVED_DRAWDOWN_AMT" jdbcType="DECIMAL" property="approvedDrawdownAmt" />
+    <result column="EXPIRY_DATE_OF_THE_LOAN_RENEWAL_SUBMISSION" jdbcType="TIMESTAMP" property="expiryDateOfTheLoanRenewalSubmission" />
+    <result column="APPL_STATUS_RENEWAL" jdbcType="VARCHAR" property="applStatusRenewal" />
+    <result column="APPL_LETTER_ISSUE_DATE_RENEWAL" jdbcType="TIMESTAMP" property="applLetterIssueDateRenewal" />
+    <result column="FINAL_APPL_LETTER_DATE_RENEWAL" jdbcType="TIMESTAMP" property="finalApplLetterDateRenewal" />
+    <result column="REJECT_LETTER_DATE_RENEWAL" jdbcType="TIMESTAMP" property="rejectLetterDateRenewal" />
+    <result column="RETURN_LETTER_DATE_RENEWAL" jdbcType="TIMESTAMP" property="returnLetterDateRenewal" />
+    <result column="LOAN_EXPIRY_DATE_APPROVRD_RENEWAL" jdbcType="TIMESTAMP" property="loanExpiryDateApprovrdRenewal" />
+    <result column="PROPOSE_VARIATION_VAR_SUBMISSION" jdbcType="VARCHAR" property="proposeVariationVarSubmission" />
+    <result column="APPL_STATUS_VAR" jdbcType="VARCHAR" property="applStatusVar" />
+    <result column="APPL_LETTER_ISSUED_DATE_VAR" jdbcType="TIMESTAMP" property="applLetterIssuedDateVar" />
+    <result column="REJECT_LETTER_ISSUED_DATE_VAR" jdbcType="TIMESTAMP" property="rejectLetterIssuedDateVar" />
+    <result column="RETURN_LETTER_DATE_VAR" jdbcType="TIMESTAMP" property="returnLetterDateVar" />
+    <result column="APPL_REJECT_WITHDL_DATE_VAR" jdbcType="TIMESTAMP" property="applRejectWithdlDateVar" />
+    <result column="APPL_VARIATION_LOAN_AGREEMENT" jdbcType="VARCHAR" property="applVariationLoanAgreement" />
+    <result column="DATE_OF_REPAYMENT_SUBMISSION" jdbcType="TIMESTAMP" property="dateOfRepaymentSubmission" />
+    <result column="CURRENCY_REPAYMENT_SUBMISSION" jdbcType="VARCHAR" property="currencyRepaymentSubmission" />
+    <result column="REPAYMENT_AMT_SUBMISSION" jdbcType="DECIMAL" property="repaymentAmtSubmission" />
+    <result column="APPL_STATUS_REPAYMENT" jdbcType="VARCHAR" property="applStatusRepayment" />
+    <result column="PRIOR_CONSENT_LETTER_ISSUED_DATE_REPAYMENT" jdbcType="TIMESTAMP" property="priorConsentLetterIssuedDateRepayment" />
+    <result column="APPL_LETTER_ISSUED_DATE_REPAYMENT" jdbcType="TIMESTAMP" property="applLetterIssuedDateRepayment" />
+    <result column="REJECT_LETTER_ISSUED_DATE_REPAYMENT" jdbcType="TIMESTAMP" property="rejectLetterIssuedDateRepayment" />
+    <result column="RETURN_LETTER_DATE_REPAYMENT" jdbcType="TIMESTAMP" property="returnLetterDateRepayment" />
+    <result column="APPL_REJECT_WITHDL_DATE_REPAYMENT" jdbcType="TIMESTAMP" property="applRejectWithdlDateRepayment" />
+    <result column="APPROVED_DATE_OF_REPAYMENT" jdbcType="TIMESTAMP" property="approvedDateOfRepayment" />
+    <result column="APPROVED_CURRENCY_REPAYMENT" jdbcType="VARCHAR" property="approvedCurrencyRepayment" />
+    <result column="APPROVED_REPAYMENT_AMT" jdbcType="DECIMAL" property="approvedRepaymentAmt" />
+    <result column="PROPOSE_AMENDMENT_CONDITION_SUBMISSION" jdbcType="VARCHAR" property="proposeAmendmentConditionSubmission" />
+    <result column="APPL_STATUS_AMENDMENT_CONDITION" jdbcType="VARCHAR" property="applStatusAmendmentCondition" />
+    <result column="INPRINCIPLE_APPL_LETTER_ISSUED_DATE_AMENDMENT_CONDITION" jdbcType="TIMESTAMP" property="inprincipleApplLetterIssuedDateAmendmentCondition" />
+    <result column="APPL_LETTER_ISSUED_DATE_AMENDMENT_CONDITION" jdbcType="TIMESTAMP" property="applLetterIssuedDateAmendmentCondition" />
+    <result column="REJECT_LETTER_ISSUED_DATE_AMENDMENT_CONDITION" jdbcType="TIMESTAMP" property="rejectLetterIssuedDateAmendmentCondition" />
+    <result column="RETURN_LETTER_DATE_AMENDMENT_CONDITION" jdbcType="TIMESTAMP" property="returnLetterDateAmendmentCondition" />
+    <result column="APPL_REJECT_WITHDL_DATE_AMENDMENT_CONDITION" jdbcType="TIMESTAMP" property="applRejectWithdlDateAmendmentCondition" />
+    <result column="APPROVED_AMENDMENT_CONDITION" jdbcType="VARCHAR" property="approvedAmendmentCondition" />
+    <result column="DATE_OF_TERM_SUBMISSION" jdbcType="TIMESTAMP" property="dateOfTermSubmission" />
+    <result column="APPL_STATUS_TERM" jdbcType="VARCHAR" property="applStatusTerm" />
+    <result column="APPL_LETTER_ISSUE_DATE_TERM" jdbcType="TIMESTAMP" property="applLetterIssueDateTerm" />
+    <result column="FINAL_APPL_LETTER_DATE_TERM" jdbcType="TIMESTAMP" property="finalApplLetterDateTerm" />
+    <result column="REJECT_LETTER_DATE_TERM" jdbcType="TIMESTAMP" property="rejectLetterDateTerm" />
+    <result column="RETURN_LETTER_DATE_TERM" jdbcType="TIMESTAMP" property="returnLetterDateTerm" />
+    <result column="LOAN_EXPIRY_DATE_APPROVRD_TERM" jdbcType="TIMESTAMP" property="loanExpiryDateApprovrdTerm" />
+    <result column="APPROVED_DATE_OF_TERM" jdbcType="TIMESTAMP" property="approvedDateOfTerm" />
+    <result column="LAST_APPL_EXT_RENEW_DATE_MOVEMENT" jdbcType="TIMESTAMP" property="lastApplExtRenewDateMovement" />
+    <result column="LOAN_EXPIRY_DATE_MOVEMENT" jdbcType="TIMESTAMP" property="loanExpiryDateMovement" />
+    <result column="EXPIRED_LOAN_MOVEMENT" jdbcType="VARCHAR" property="expiredLoanMovement" />
+    <result column="TERM_DATE_BORROWER_LOAN_MOVEMENT" jdbcType="TIMESTAMP" property="termDateBorrowerLoanMovement" />
+    <result column="TERM_DATE_SFC_LOAN_MOVEMENT" jdbcType="TIMESTAMP" property="termDateSfcLoanMovement" />
+    <result column="VARIATION_OF_TERMS_APPROVAL_LOAN_MOVEMENT" jdbcType="VARCHAR" property="variationOfTermsApprovalLoanMovement" />
+    <result column="IMPOSITION_AMENDMENT_REVOCATION_CONDITION_APPRL_SFC_MOVEMENT" jdbcType="VARCHAR" property="impositionAmendmentRevocationConditionApprlSfcMovement" />
+    <result column="CURRENCY_LOAN_MOVEMENT" jdbcType="VARCHAR" property="currencyLoanMovement" />
+    <result column="FACILITY_LIMIT_LOAN_MOVEMENT" jdbcType="DECIMAL" property="facilityLimitLoanMovement" />
+    <result column="LOAN_AMT_MOVEMENT" jdbcType="DECIMAL" property="loanAmtMovement" />
+    <result column="OUTSTANDING_LOAN_AMT_MOVEMENT" jdbcType="DECIMAL" property="outstandingLoanAmtMovement" />
+    <result column="CREATION_DATE" jdbcType="TIMESTAMP" property="creationDate" />
+    <result column="CREATED_BY" jdbcType="VARCHAR" property="createdBy" />
+    <result column="LAST_UPDATE_DATE" jdbcType="TIMESTAMP" property="lastUpdateDate" />
+    <result column="LAST_UPDATED_BY" jdbcType="VARCHAR" property="lastUpdatedBy" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    CASE_ID, FORM_TYPE, APPL_DATE, ASSO_LOAN_ID, CEREF, FEE_RECEIVED_MASTER, FEE_PAYMENT_RECEIPT_DATE, 
+    ACKNOWLEDGING_APPLICATION_RECEIPT_DATE, ACKNOWLEDGING_FEE_PAYMENT_RECEIPT_DATE, MEET_PERFORMANCE_PLEDGE, 
+    LOAN_AGREE_DATE, CURRENCY_MASTER, LOAN_FACILITY_AMT, BORROWER, LENDER_NAME_1, LENDER_NAME_2, 
+    LENDER_NAME_3, LENDER_NAME_4, LENDER_NAME_5, LOAN_TYPE_NEWAPP_SUBMISSION, CURRENCY_NEWAPP_SUBMISSION, 
+    LOAN_FACILITY_AMOUNT_NEWAPP_SUBMISSION, INTEREST_RATE_NEWAPP_SUBMISSION, DURATION_NEWAPP_SUBMISSION, 
+    APPL_STATUS_NEWAPP, INPRINCIPLE_APPL_LETTER_ISSUED_DATE_NEWAPP, FINAL_APPL_LETTER_DATE_NEWAPP, 
+    REJECT_LETTER_DATE_NEWAPP, RETURN_LETTER_DATE_NEWAPP, APPL_REJECT_WITHDL_DATE_NEWAPP, 
+    LOAN_AGREEMENT_DATE_NEWAPP, LOAN_EXPIRY_DATE_NEWAPP, APPROVED_CURRENCY_NEWAPP, APPROVED_LOAN_AMOUNT_FACILITY_NEWAPP, 
+    APPROVED_INTEREST_RATE_NEWAPP, APPROVED_DURATION_NEWAPP, DATE_OF_DRAWDOWN_SUBMISSION, 
+    CURRENCY_DRAWDOWN_SUBMISSION, DRAWDOWN_AMT_SUBMISSION, APPL_STATUS_DRAWDOWN, CONFIRM_LETTER_ISSUE_DATE_DRAWDOWN, 
+    REJECT_LETTER_DATE_DRAWDOWN, RETURN_LETTER_DATE_DRAWDOWN, APPL_REJECT_WITHDL_DATE_DRAWDOWN, 
+    APPROVED_DATE_OF_DRAWDOWN, CURRENCY_APPROVED_DRAWDOWN, APPROVED_DRAWDOWN_AMT, EXPIRY_DATE_OF_THE_LOAN_RENEWAL_SUBMISSION, 
+    APPL_STATUS_RENEWAL, APPL_LETTER_ISSUE_DATE_RENEWAL, FINAL_APPL_LETTER_DATE_RENEWAL, 
+    REJECT_LETTER_DATE_RENEWAL, RETURN_LETTER_DATE_RENEWAL, LOAN_EXPIRY_DATE_APPROVRD_RENEWAL, 
+    PROPOSE_VARIATION_VAR_SUBMISSION, APPL_STATUS_VAR, APPL_LETTER_ISSUED_DATE_VAR, REJECT_LETTER_ISSUED_DATE_VAR, 
+    RETURN_LETTER_DATE_VAR, APPL_REJECT_WITHDL_DATE_VAR, APPL_VARIATION_LOAN_AGREEMENT, 
+    DATE_OF_REPAYMENT_SUBMISSION, CURRENCY_REPAYMENT_SUBMISSION, REPAYMENT_AMT_SUBMISSION, 
+    APPL_STATUS_REPAYMENT, PRIOR_CONSENT_LETTER_ISSUED_DATE_REPAYMENT, APPL_LETTER_ISSUED_DATE_REPAYMENT, 
+    REJECT_LETTER_ISSUED_DATE_REPAYMENT, RETURN_LETTER_DATE_REPAYMENT, APPL_REJECT_WITHDL_DATE_REPAYMENT, 
+    APPROVED_DATE_OF_REPAYMENT, APPROVED_CURRENCY_REPAYMENT, APPROVED_REPAYMENT_AMT, 
+    PROPOSE_AMENDMENT_CONDITION_SUBMISSION, APPL_STATUS_AMENDMENT_CONDITION, INPRINCIPLE_APPL_LETTER_ISSUED_DATE_AMENDMENT_CONDITION, 
+    APPL_LETTER_ISSUED_DATE_AMENDMENT_CONDITION, REJECT_LETTER_ISSUED_DATE_AMENDMENT_CONDITION, 
+    RETURN_LETTER_DATE_AMENDMENT_CONDITION, APPL_REJECT_WITHDL_DATE_AMENDMENT_CONDITION, 
+    APPROVED_AMENDMENT_CONDITION, DATE_OF_TERM_SUBMISSION, APPL_STATUS_TERM, APPL_LETTER_ISSUE_DATE_TERM, 
+    FINAL_APPL_LETTER_DATE_TERM, REJECT_LETTER_DATE_TERM, RETURN_LETTER_DATE_TERM, LOAN_EXPIRY_DATE_APPROVRD_TERM, 
+    APPROVED_DATE_OF_TERM, LAST_APPL_EXT_RENEW_DATE_MOVEMENT, LOAN_EXPIRY_DATE_MOVEMENT, 
+    EXPIRED_LOAN_MOVEMENT, TERM_DATE_BORROWER_LOAN_MOVEMENT, TERM_DATE_SFC_LOAN_MOVEMENT, 
+    VARIATION_OF_TERMS_APPROVAL_LOAN_MOVEMENT, IMPOSITION_AMENDMENT_REVOCATION_CONDITION_APPRL_SFC_MOVEMENT, 
+    CURRENCY_LOAN_MOVEMENT, FACILITY_LIMIT_LOAN_MOVEMENT, LOAN_AMT_MOVEMENT, OUTSTANDING_LOAN_AMT_MOVEMENT, 
+    CREATION_DATE, CREATED_BY, LAST_UPDATE_DATE, LAST_UPDATED_BY
+  </sql>
+  <insert id="insert" parameterType="com.kinetix.surveyengine.entity.SubLoan">
+    <!--@mbg.generated-->
+    insert into YOUR_TABLE_NAME (CASE_ID, FORM_TYPE, APPL_DATE, 
+      ASSO_LOAN_ID, CEREF, FEE_RECEIVED_MASTER, 
+      FEE_PAYMENT_RECEIPT_DATE, ACKNOWLEDGING_APPLICATION_RECEIPT_DATE, 
+      ACKNOWLEDGING_FEE_PAYMENT_RECEIPT_DATE, MEET_PERFORMANCE_PLEDGE, 
+      LOAN_AGREE_DATE, CURRENCY_MASTER, LOAN_FACILITY_AMT, 
+      BORROWER, LENDER_NAME_1, LENDER_NAME_2, 
+      LENDER_NAME_3, LENDER_NAME_4, LENDER_NAME_5, 
+      LOAN_TYPE_NEWAPP_SUBMISSION, CURRENCY_NEWAPP_SUBMISSION, 
+      LOAN_FACILITY_AMOUNT_NEWAPP_SUBMISSION, INTEREST_RATE_NEWAPP_SUBMISSION, 
+      DURATION_NEWAPP_SUBMISSION, APPL_STATUS_NEWAPP, 
+      INPRINCIPLE_APPL_LETTER_ISSUED_DATE_NEWAPP, FINAL_APPL_LETTER_DATE_NEWAPP, 
+      REJECT_LETTER_DATE_NEWAPP, RETURN_LETTER_DATE_NEWAPP, 
+      APPL_REJECT_WITHDL_DATE_NEWAPP, LOAN_AGREEMENT_DATE_NEWAPP, 
+      LOAN_EXPIRY_DATE_NEWAPP, APPROVED_CURRENCY_NEWAPP, 
+      APPROVED_LOAN_AMOUNT_FACILITY_NEWAPP, APPROVED_INTEREST_RATE_NEWAPP, 
+      APPROVED_DURATION_NEWAPP, DATE_OF_DRAWDOWN_SUBMISSION, 
+      CURRENCY_DRAWDOWN_SUBMISSION, DRAWDOWN_AMT_SUBMISSION, 
+      APPL_STATUS_DRAWDOWN, CONFIRM_LETTER_ISSUE_DATE_DRAWDOWN, 
+      REJECT_LETTER_DATE_DRAWDOWN, RETURN_LETTER_DATE_DRAWDOWN, 
+      APPL_REJECT_WITHDL_DATE_DRAWDOWN, APPROVED_DATE_OF_DRAWDOWN, 
+      CURRENCY_APPROVED_DRAWDOWN, APPROVED_DRAWDOWN_AMT, 
+      EXPIRY_DATE_OF_THE_LOAN_RENEWAL_SUBMISSION, APPL_STATUS_RENEWAL, 
+      APPL_LETTER_ISSUE_DATE_RENEWAL, FINAL_APPL_LETTER_DATE_RENEWAL, 
+      REJECT_LETTER_DATE_RENEWAL, RETURN_LETTER_DATE_RENEWAL, 
+      LOAN_EXPIRY_DATE_APPROVRD_RENEWAL, PROPOSE_VARIATION_VAR_SUBMISSION, 
+      APPL_STATUS_VAR, APPL_LETTER_ISSUED_DATE_VAR, 
+      REJECT_LETTER_ISSUED_DATE_VAR, RETURN_LETTER_DATE_VAR, 
+      APPL_REJECT_WITHDL_DATE_VAR, APPL_VARIATION_LOAN_AGREEMENT, 
+      DATE_OF_REPAYMENT_SUBMISSION, CURRENCY_REPAYMENT_SUBMISSION, 
+      REPAYMENT_AMT_SUBMISSION, APPL_STATUS_REPAYMENT, 
+      PRIOR_CONSENT_LETTER_ISSUED_DATE_REPAYMENT, APPL_LETTER_ISSUED_DATE_REPAYMENT, 
+      REJECT_LETTER_ISSUED_DATE_REPAYMENT, RETURN_LETTER_DATE_REPAYMENT, 
+      APPL_REJECT_WITHDL_DATE_REPAYMENT, APPROVED_DATE_OF_REPAYMENT, 
+      APPROVED_CURRENCY_REPAYMENT, APPROVED_REPAYMENT_AMT, 
+      PROPOSE_AMENDMENT_CONDITION_SUBMISSION, APPL_STATUS_AMENDMENT_CONDITION, 
+      INPRINCIPLE_APPL_LETTER_ISSUED_DATE_AMENDMENT_CONDITION, APPL_LETTER_ISSUED_DATE_AMENDMENT_CONDITION, 
+      REJECT_LETTER_ISSUED_DATE_AMENDMENT_CONDITION, RETURN_LETTER_DATE_AMENDMENT_CONDITION, 
+      APPL_REJECT_WITHDL_DATE_AMENDMENT_CONDITION, APPROVED_AMENDMENT_CONDITION, 
+      DATE_OF_TERM_SUBMISSION, APPL_STATUS_TERM, 
+      APPL_LETTER_ISSUE_DATE_TERM, FINAL_APPL_LETTER_DATE_TERM, 
+      REJECT_LETTER_DATE_TERM, RETURN_LETTER_DATE_TERM, 
+      LOAN_EXPIRY_DATE_APPROVRD_TERM, APPROVED_DATE_OF_TERM, 
+      LAST_APPL_EXT_RENEW_DATE_MOVEMENT, LOAN_EXPIRY_DATE_MOVEMENT, 
+      EXPIRED_LOAN_MOVEMENT, TERM_DATE_BORROWER_LOAN_MOVEMENT, 
+      TERM_DATE_SFC_LOAN_MOVEMENT, VARIATION_OF_TERMS_APPROVAL_LOAN_MOVEMENT, 
+      IMPOSITION_AMENDMENT_REVOCATION_CONDITION_APPRL_SFC_MOVEMENT, CURRENCY_LOAN_MOVEMENT, 
+      FACILITY_LIMIT_LOAN_MOVEMENT, LOAN_AMT_MOVEMENT, 
+      OUTSTANDING_LOAN_AMT_MOVEMENT, CREATION_DATE, 
+      CREATED_BY, LAST_UPDATE_DATE, LAST_UPDATED_BY
+      )
+    values (#{caseId,jdbcType=VARCHAR}, #{formType,jdbcType=VARCHAR}, #{applDate,jdbcType=TIMESTAMP}, 
+      #{assoLoanId,jdbcType=VARCHAR}, #{ceref,jdbcType=VARCHAR}, #{feeReceivedMaster,jdbcType=VARCHAR}, 
+      #{feePaymentReceiptDate,jdbcType=TIMESTAMP}, #{acknowledgingApplicationReceiptDate,jdbcType=TIMESTAMP}, 
+      #{acknowledgingFeePaymentReceiptDate,jdbcType=TIMESTAMP}, #{meetPerformancePledge,jdbcType=VARCHAR}, 
+      #{loanAgreeDate,jdbcType=TIMESTAMP}, #{currencyMaster,jdbcType=VARCHAR}, #{loanFacilityAmt,jdbcType=DECIMAL}, 
+      #{borrower,jdbcType=VARCHAR}, #{lenderName1,jdbcType=VARCHAR}, #{lenderName2,jdbcType=VARCHAR}, 
+      #{lenderName3,jdbcType=VARCHAR}, #{lenderName4,jdbcType=VARCHAR}, #{lenderName5,jdbcType=VARCHAR}, 
+      #{loanTypeNewappSubmission,jdbcType=VARCHAR}, #{currencyNewappSubmission,jdbcType=VARCHAR}, 
+      #{loanFacilityAmountNewappSubmission,jdbcType=DECIMAL}, #{interestRateNewappSubmission,jdbcType=VARCHAR}, 
+      #{durationNewappSubmission,jdbcType=VARCHAR}, #{applStatusNewapp,jdbcType=VARCHAR}, 
+      #{inprincipleApplLetterIssuedDateNewapp,jdbcType=TIMESTAMP}, #{finalApplLetterDateNewapp,jdbcType=TIMESTAMP}, 
+      #{rejectLetterDateNewapp,jdbcType=TIMESTAMP}, #{returnLetterDateNewapp,jdbcType=TIMESTAMP}, 
+      #{applRejectWithdlDateNewapp,jdbcType=TIMESTAMP}, #{loanAgreementDateNewapp,jdbcType=TIMESTAMP}, 
+      #{loanExpiryDateNewapp,jdbcType=TIMESTAMP}, #{approvedCurrencyNewapp,jdbcType=VARCHAR}, 
+      #{approvedLoanAmountFacilityNewapp,jdbcType=VARCHAR}, #{approvedInterestRateNewapp,jdbcType=VARCHAR}, 
+      #{approvedDurationNewapp,jdbcType=VARCHAR}, #{dateOfDrawdownSubmission,jdbcType=TIMESTAMP}, 
+      #{currencyDrawdownSubmission,jdbcType=VARCHAR}, #{drawdownAmtSubmission,jdbcType=VARCHAR}, 
+      #{applStatusDrawdown,jdbcType=VARCHAR}, #{confirmLetterIssueDateDrawdown,jdbcType=TIMESTAMP}, 
+      #{rejectLetterDateDrawdown,jdbcType=TIMESTAMP}, #{returnLetterDateDrawdown,jdbcType=TIMESTAMP}, 
+      #{applRejectWithdlDateDrawdown,jdbcType=TIMESTAMP}, #{approvedDateOfDrawdown,jdbcType=TIMESTAMP}, 
+      #{currencyApprovedDrawdown,jdbcType=VARCHAR}, #{approvedDrawdownAmt,jdbcType=DECIMAL}, 
+      #{expiryDateOfTheLoanRenewalSubmission,jdbcType=TIMESTAMP}, #{applStatusRenewal,jdbcType=VARCHAR}, 
+      #{applLetterIssueDateRenewal,jdbcType=TIMESTAMP}, #{finalApplLetterDateRenewal,jdbcType=TIMESTAMP}, 
+      #{rejectLetterDateRenewal,jdbcType=TIMESTAMP}, #{returnLetterDateRenewal,jdbcType=TIMESTAMP}, 
+      #{loanExpiryDateApprovrdRenewal,jdbcType=TIMESTAMP}, #{proposeVariationVarSubmission,jdbcType=VARCHAR}, 
+      #{applStatusVar,jdbcType=VARCHAR}, #{applLetterIssuedDateVar,jdbcType=TIMESTAMP}, 
+      #{rejectLetterIssuedDateVar,jdbcType=TIMESTAMP}, #{returnLetterDateVar,jdbcType=TIMESTAMP}, 
+      #{applRejectWithdlDateVar,jdbcType=TIMESTAMP}, #{applVariationLoanAgreement,jdbcType=VARCHAR}, 
+      #{dateOfRepaymentSubmission,jdbcType=TIMESTAMP}, #{currencyRepaymentSubmission,jdbcType=VARCHAR}, 
+      #{repaymentAmtSubmission,jdbcType=DECIMAL}, #{applStatusRepayment,jdbcType=VARCHAR}, 
+      #{priorConsentLetterIssuedDateRepayment,jdbcType=TIMESTAMP}, #{applLetterIssuedDateRepayment,jdbcType=TIMESTAMP}, 
+      #{rejectLetterIssuedDateRepayment,jdbcType=TIMESTAMP}, #{returnLetterDateRepayment,jdbcType=TIMESTAMP}, 
+      #{applRejectWithdlDateRepayment,jdbcType=TIMESTAMP}, #{approvedDateOfRepayment,jdbcType=TIMESTAMP}, 
+      #{approvedCurrencyRepayment,jdbcType=VARCHAR}, #{approvedRepaymentAmt,jdbcType=DECIMAL}, 
+      #{proposeAmendmentConditionSubmission,jdbcType=VARCHAR}, #{applStatusAmendmentCondition,jdbcType=VARCHAR}, 
+      #{inprincipleApplLetterIssuedDateAmendmentCondition,jdbcType=TIMESTAMP}, #{applLetterIssuedDateAmendmentCondition,jdbcType=TIMESTAMP}, 
+      #{rejectLetterIssuedDateAmendmentCondition,jdbcType=TIMESTAMP}, #{returnLetterDateAmendmentCondition,jdbcType=TIMESTAMP}, 
+      #{applRejectWithdlDateAmendmentCondition,jdbcType=TIMESTAMP}, #{approvedAmendmentCondition,jdbcType=VARCHAR}, 
+      #{dateOfTermSubmission,jdbcType=TIMESTAMP}, #{applStatusTerm,jdbcType=VARCHAR}, 
+      #{applLetterIssueDateTerm,jdbcType=TIMESTAMP}, #{finalApplLetterDateTerm,jdbcType=TIMESTAMP}, 
+      #{rejectLetterDateTerm,jdbcType=TIMESTAMP}, #{returnLetterDateTerm,jdbcType=TIMESTAMP}, 
+      #{loanExpiryDateApprovrdTerm,jdbcType=TIMESTAMP}, #{approvedDateOfTerm,jdbcType=TIMESTAMP}, 
+      #{lastApplExtRenewDateMovement,jdbcType=TIMESTAMP}, #{loanExpiryDateMovement,jdbcType=TIMESTAMP}, 
+      #{expiredLoanMovement,jdbcType=VARCHAR}, #{termDateBorrowerLoanMovement,jdbcType=TIMESTAMP}, 
+      #{termDateSfcLoanMovement,jdbcType=TIMESTAMP}, #{variationOfTermsApprovalLoanMovement,jdbcType=VARCHAR}, 
+      #{impositionAmendmentRevocationConditionApprlSfcMovement,jdbcType=VARCHAR}, #{currencyLoanMovement,jdbcType=VARCHAR}, 
+      #{facilityLimitLoanMovement,jdbcType=DECIMAL}, #{loanAmtMovement,jdbcType=DECIMAL}, 
+      #{outstandingLoanAmtMovement,jdbcType=DECIMAL}, #{creationDate,jdbcType=TIMESTAMP}, 
+      #{createdBy,jdbcType=VARCHAR}, #{lastUpdateDate,jdbcType=TIMESTAMP}, #{lastUpdatedBy,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.kinetix.surveyengine.entity.SubLoan">
+    <!--@mbg.generated-->
+    insert into YOUR_TABLE_NAME
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="caseId != null">
+        CASE_ID,
+      </if>
+      <if test="formType != null">
+        FORM_TYPE,
+      </if>
+      <if test="applDate != null">
+        APPL_DATE,
+      </if>
+      <if test="assoLoanId != null">
+        ASSO_LOAN_ID,
+      </if>
+      <if test="ceref != null">
+        CEREF,
+      </if>
+      <if test="feeReceivedMaster != null">
+        FEE_RECEIVED_MASTER,
+      </if>
+      <if test="feePaymentReceiptDate != null">
+        FEE_PAYMENT_RECEIPT_DATE,
+      </if>
+      <if test="acknowledgingApplicationReceiptDate != null">
+        ACKNOWLEDGING_APPLICATION_RECEIPT_DATE,
+      </if>
+      <if test="acknowledgingFeePaymentReceiptDate != null">
+        ACKNOWLEDGING_FEE_PAYMENT_RECEIPT_DATE,
+      </if>
+      <if test="meetPerformancePledge != null">
+        MEET_PERFORMANCE_PLEDGE,
+      </if>
+      <if test="loanAgreeDate != null">
+        LOAN_AGREE_DATE,
+      </if>
+      <if test="currencyMaster != null">
+        CURRENCY_MASTER,
+      </if>
+      <if test="loanFacilityAmt != null">
+        LOAN_FACILITY_AMT,
+      </if>
+      <if test="borrower != null">
+        BORROWER,
+      </if>
+      <if test="lenderName1 != null">
+        LENDER_NAME_1,
+      </if>
+      <if test="lenderName2 != null">
+        LENDER_NAME_2,
+      </if>
+      <if test="lenderName3 != null">
+        LENDER_NAME_3,
+      </if>
+      <if test="lenderName4 != null">
+        LENDER_NAME_4,
+      </if>
+      <if test="lenderName5 != null">
+        LENDER_NAME_5,
+      </if>
+      <if test="loanTypeNewappSubmission != null">
+        LOAN_TYPE_NEWAPP_SUBMISSION,
+      </if>
+      <if test="currencyNewappSubmission != null">
+        CURRENCY_NEWAPP_SUBMISSION,
+      </if>
+      <if test="loanFacilityAmountNewappSubmission != null">
+        LOAN_FACILITY_AMOUNT_NEWAPP_SUBMISSION,
+      </if>
+      <if test="interestRateNewappSubmission != null">
+        INTEREST_RATE_NEWAPP_SUBMISSION,
+      </if>
+      <if test="durationNewappSubmission != null">
+        DURATION_NEWAPP_SUBMISSION,
+      </if>
+      <if test="applStatusNewapp != null">
+        APPL_STATUS_NEWAPP,
+      </if>
+      <if test="inprincipleApplLetterIssuedDateNewapp != null">
+        INPRINCIPLE_APPL_LETTER_ISSUED_DATE_NEWAPP,
+      </if>
+      <if test="finalApplLetterDateNewapp != null">
+        FINAL_APPL_LETTER_DATE_NEWAPP,
+      </if>
+      <if test="rejectLetterDateNewapp != null">
+        REJECT_LETTER_DATE_NEWAPP,
+      </if>
+      <if test="returnLetterDateNewapp != null">
+        RETURN_LETTER_DATE_NEWAPP,
+      </if>
+      <if test="applRejectWithdlDateNewapp != null">
+        APPL_REJECT_WITHDL_DATE_NEWAPP,
+      </if>
+      <if test="loanAgreementDateNewapp != null">
+        LOAN_AGREEMENT_DATE_NEWAPP,
+      </if>
+      <if test="loanExpiryDateNewapp != null">
+        LOAN_EXPIRY_DATE_NEWAPP,
+      </if>
+      <if test="approvedCurrencyNewapp != null">
+        APPROVED_CURRENCY_NEWAPP,
+      </if>
+      <if test="approvedLoanAmountFacilityNewapp != null">
+        APPROVED_LOAN_AMOUNT_FACILITY_NEWAPP,
+      </if>
+      <if test="approvedInterestRateNewapp != null">
+        APPROVED_INTEREST_RATE_NEWAPP,
+      </if>
+      <if test="approvedDurationNewapp != null">
+        APPROVED_DURATION_NEWAPP,
+      </if>
+      <if test="dateOfDrawdownSubmission != null">
+        DATE_OF_DRAWDOWN_SUBMISSION,
+      </if>
+      <if test="currencyDrawdownSubmission != null">
+        CURRENCY_DRAWDOWN_SUBMISSION,
+      </if>
+      <if test="drawdownAmtSubmission != null">
+        DRAWDOWN_AMT_SUBMISSION,
+      </if>
+      <if test="applStatusDrawdown != null">
+        APPL_STATUS_DRAWDOWN,
+      </if>
+      <if test="confirmLetterIssueDateDrawdown != null">
+        CONFIRM_LETTER_ISSUE_DATE_DRAWDOWN,
+      </if>
+      <if test="rejectLetterDateDrawdown != null">
+        REJECT_LETTER_DATE_DRAWDOWN,
+      </if>
+      <if test="returnLetterDateDrawdown != null">
+        RETURN_LETTER_DATE_DRAWDOWN,
+      </if>
+      <if test="applRejectWithdlDateDrawdown != null">
+        APPL_REJECT_WITHDL_DATE_DRAWDOWN,
+      </if>
+      <if test="approvedDateOfDrawdown != null">
+        APPROVED_DATE_OF_DRAWDOWN,
+      </if>
+      <if test="currencyApprovedDrawdown != null">
+        CURRENCY_APPROVED_DRAWDOWN,
+      </if>
+      <if test="approvedDrawdownAmt != null">
+        APPROVED_DRAWDOWN_AMT,
+      </if>
+      <if test="expiryDateOfTheLoanRenewalSubmission != null">
+        EXPIRY_DATE_OF_THE_LOAN_RENEWAL_SUBMISSION,
+      </if>
+      <if test="applStatusRenewal != null">
+        APPL_STATUS_RENEWAL,
+      </if>
+      <if test="applLetterIssueDateRenewal != null">
+        APPL_LETTER_ISSUE_DATE_RENEWAL,
+      </if>
+      <if test="finalApplLetterDateRenewal != null">
+        FINAL_APPL_LETTER_DATE_RENEWAL,
+      </if>
+      <if test="rejectLetterDateRenewal != null">
+        REJECT_LETTER_DATE_RENEWAL,
+      </if>
+      <if test="returnLetterDateRenewal != null">
+        RETURN_LETTER_DATE_RENEWAL,
+      </if>
+      <if test="loanExpiryDateApprovrdRenewal != null">
+        LOAN_EXPIRY_DATE_APPROVRD_RENEWAL,
+      </if>
+      <if test="proposeVariationVarSubmission != null">
+        PROPOSE_VARIATION_VAR_SUBMISSION,
+      </if>
+      <if test="applStatusVar != null">
+        APPL_STATUS_VAR,
+      </if>
+      <if test="applLetterIssuedDateVar != null">
+        APPL_LETTER_ISSUED_DATE_VAR,
+      </if>
+      <if test="rejectLetterIssuedDateVar != null">
+        REJECT_LETTER_ISSUED_DATE_VAR,
+      </if>
+      <if test="returnLetterDateVar != null">
+        RETURN_LETTER_DATE_VAR,
+      </if>
+      <if test="applRejectWithdlDateVar != null">
+        APPL_REJECT_WITHDL_DATE_VAR,
+      </if>
+      <if test="applVariationLoanAgreement != null">
+        APPL_VARIATION_LOAN_AGREEMENT,
+      </if>
+      <if test="dateOfRepaymentSubmission != null">
+        DATE_OF_REPAYMENT_SUBMISSION,
+      </if>
+      <if test="currencyRepaymentSubmission != null">
+        CURRENCY_REPAYMENT_SUBMISSION,
+      </if>
+      <if test="repaymentAmtSubmission != null">
+        REPAYMENT_AMT_SUBMISSION,
+      </if>
+      <if test="applStatusRepayment != null">
+        APPL_STATUS_REPAYMENT,
+      </if>
+      <if test="priorConsentLetterIssuedDateRepayment != null">
+        PRIOR_CONSENT_LETTER_ISSUED_DATE_REPAYMENT,
+      </if>
+      <if test="applLetterIssuedDateRepayment != null">
+        APPL_LETTER_ISSUED_DATE_REPAYMENT,
+      </if>
+      <if test="rejectLetterIssuedDateRepayment != null">
+        REJECT_LETTER_ISSUED_DATE_REPAYMENT,
+      </if>
+      <if test="returnLetterDateRepayment != null">
+        RETURN_LETTER_DATE_REPAYMENT,
+      </if>
+      <if test="applRejectWithdlDateRepayment != null">
+        APPL_REJECT_WITHDL_DATE_REPAYMENT,
+      </if>
+      <if test="approvedDateOfRepayment != null">
+        APPROVED_DATE_OF_REPAYMENT,
+      </if>
+      <if test="approvedCurrencyRepayment != null">
+        APPROVED_CURRENCY_REPAYMENT,
+      </if>
+      <if test="approvedRepaymentAmt != null">
+        APPROVED_REPAYMENT_AMT,
+      </if>
+      <if test="proposeAmendmentConditionSubmission != null">
+        PROPOSE_AMENDMENT_CONDITION_SUBMISSION,
+      </if>
+      <if test="applStatusAmendmentCondition != null">
+        APPL_STATUS_AMENDMENT_CONDITION,
+      </if>
+      <if test="inprincipleApplLetterIssuedDateAmendmentCondition != null">
+        INPRINCIPLE_APPL_LETTER_ISSUED_DATE_AMENDMENT_CONDITION,
+      </if>
+      <if test="applLetterIssuedDateAmendmentCondition != null">
+        APPL_LETTER_ISSUED_DATE_AMENDMENT_CONDITION,
+      </if>
+      <if test="rejectLetterIssuedDateAmendmentCondition != null">
+        REJECT_LETTER_ISSUED_DATE_AMENDMENT_CONDITION,
+      </if>
+      <if test="returnLetterDateAmendmentCondition != null">
+        RETURN_LETTER_DATE_AMENDMENT_CONDITION,
+      </if>
+      <if test="applRejectWithdlDateAmendmentCondition != null">
+        APPL_REJECT_WITHDL_DATE_AMENDMENT_CONDITION,
+      </if>
+      <if test="approvedAmendmentCondition != null">
+        APPROVED_AMENDMENT_CONDITION,
+      </if>
+      <if test="dateOfTermSubmission != null">
+        DATE_OF_TERM_SUBMISSION,
+      </if>
+      <if test="applStatusTerm != null">
+        APPL_STATUS_TERM,
+      </if>
+      <if test="applLetterIssueDateTerm != null">
+        APPL_LETTER_ISSUE_DATE_TERM,
+      </if>
+      <if test="finalApplLetterDateTerm != null">
+        FINAL_APPL_LETTER_DATE_TERM,
+      </if>
+      <if test="rejectLetterDateTerm != null">
+        REJECT_LETTER_DATE_TERM,
+      </if>
+      <if test="returnLetterDateTerm != null">
+        RETURN_LETTER_DATE_TERM,
+      </if>
+      <if test="loanExpiryDateApprovrdTerm != null">
+        LOAN_EXPIRY_DATE_APPROVRD_TERM,
+      </if>
+      <if test="approvedDateOfTerm != null">
+        APPROVED_DATE_OF_TERM,
+      </if>
+      <if test="lastApplExtRenewDateMovement != null">
+        LAST_APPL_EXT_RENEW_DATE_MOVEMENT,
+      </if>
+      <if test="loanExpiryDateMovement != null">
+        LOAN_EXPIRY_DATE_MOVEMENT,
+      </if>
+      <if test="expiredLoanMovement != null">
+        EXPIRED_LOAN_MOVEMENT,
+      </if>
+      <if test="termDateBorrowerLoanMovement != null">
+        TERM_DATE_BORROWER_LOAN_MOVEMENT,
+      </if>
+      <if test="termDateSfcLoanMovement != null">
+        TERM_DATE_SFC_LOAN_MOVEMENT,
+      </if>
+      <if test="variationOfTermsApprovalLoanMovement != null">
+        VARIATION_OF_TERMS_APPROVAL_LOAN_MOVEMENT,
+      </if>
+      <if test="impositionAmendmentRevocationConditionApprlSfcMovement != null">
+        IMPOSITION_AMENDMENT_REVOCATION_CONDITION_APPRL_SFC_MOVEMENT,
+      </if>
+      <if test="currencyLoanMovement != null">
+        CURRENCY_LOAN_MOVEMENT,
+      </if>
+      <if test="facilityLimitLoanMovement != null">
+        FACILITY_LIMIT_LOAN_MOVEMENT,
+      </if>
+      <if test="loanAmtMovement != null">
+        LOAN_AMT_MOVEMENT,
+      </if>
+      <if test="outstandingLoanAmtMovement != null">
+        OUTSTANDING_LOAN_AMT_MOVEMENT,
+      </if>
+      <if test="creationDate != null">
+        CREATION_DATE,
+      </if>
+      <if test="createdBy != null">
+        CREATED_BY,
+      </if>
+      <if test="lastUpdateDate != null">
+        LAST_UPDATE_DATE,
+      </if>
+      <if test="lastUpdatedBy != null">
+        LAST_UPDATED_BY,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="caseId != null">
+        #{caseId,jdbcType=VARCHAR},
+      </if>
+      <if test="formType != null">
+        #{formType,jdbcType=VARCHAR},
+      </if>
+      <if test="applDate != null">
+        #{applDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="assoLoanId != null">
+        #{assoLoanId,jdbcType=VARCHAR},
+      </if>
+      <if test="ceref != null">
+        #{ceref,jdbcType=VARCHAR},
+      </if>
+      <if test="feeReceivedMaster != null">
+        #{feeReceivedMaster,jdbcType=VARCHAR},
+      </if>
+      <if test="feePaymentReceiptDate != null">
+        #{feePaymentReceiptDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="acknowledgingApplicationReceiptDate != null">
+        #{acknowledgingApplicationReceiptDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="acknowledgingFeePaymentReceiptDate != null">
+        #{acknowledgingFeePaymentReceiptDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="meetPerformancePledge != null">
+        #{meetPerformancePledge,jdbcType=VARCHAR},
+      </if>
+      <if test="loanAgreeDate != null">
+        #{loanAgreeDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="currencyMaster != null">
+        #{currencyMaster,jdbcType=VARCHAR},
+      </if>
+      <if test="loanFacilityAmt != null">
+        #{loanFacilityAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="borrower != null">
+        #{borrower,jdbcType=VARCHAR},
+      </if>
+      <if test="lenderName1 != null">
+        #{lenderName1,jdbcType=VARCHAR},
+      </if>
+      <if test="lenderName2 != null">
+        #{lenderName2,jdbcType=VARCHAR},
+      </if>
+      <if test="lenderName3 != null">
+        #{lenderName3,jdbcType=VARCHAR},
+      </if>
+      <if test="lenderName4 != null">
+        #{lenderName4,jdbcType=VARCHAR},
+      </if>
+      <if test="lenderName5 != null">
+        #{lenderName5,jdbcType=VARCHAR},
+      </if>
+      <if test="loanTypeNewappSubmission != null">
+        #{loanTypeNewappSubmission,jdbcType=VARCHAR},
+      </if>
+      <if test="currencyNewappSubmission != null">
+        #{currencyNewappSubmission,jdbcType=VARCHAR},
+      </if>
+      <if test="loanFacilityAmountNewappSubmission != null">
+        #{loanFacilityAmountNewappSubmission,jdbcType=DECIMAL},
+      </if>
+      <if test="interestRateNewappSubmission != null">
+        #{interestRateNewappSubmission,jdbcType=VARCHAR},
+      </if>
+      <if test="durationNewappSubmission != null">
+        #{durationNewappSubmission,jdbcType=VARCHAR},
+      </if>
+      <if test="applStatusNewapp != null">
+        #{applStatusNewapp,jdbcType=VARCHAR},
+      </if>
+      <if test="inprincipleApplLetterIssuedDateNewapp != null">
+        #{inprincipleApplLetterIssuedDateNewapp,jdbcType=TIMESTAMP},
+      </if>
+      <if test="finalApplLetterDateNewapp != null">
+        #{finalApplLetterDateNewapp,jdbcType=TIMESTAMP},
+      </if>
+      <if test="rejectLetterDateNewapp != null">
+        #{rejectLetterDateNewapp,jdbcType=TIMESTAMP},
+      </if>
+      <if test="returnLetterDateNewapp != null">
+        #{returnLetterDateNewapp,jdbcType=TIMESTAMP},
+      </if>
+      <if test="applRejectWithdlDateNewapp != null">
+        #{applRejectWithdlDateNewapp,jdbcType=TIMESTAMP},
+      </if>
+      <if test="loanAgreementDateNewapp != null">
+        #{loanAgreementDateNewapp,jdbcType=TIMESTAMP},
+      </if>
+      <if test="loanExpiryDateNewapp != null">
+        #{loanExpiryDateNewapp,jdbcType=TIMESTAMP},
+      </if>
+      <if test="approvedCurrencyNewapp != null">
+        #{approvedCurrencyNewapp,jdbcType=VARCHAR},
+      </if>
+      <if test="approvedLoanAmountFacilityNewapp != null">
+        #{approvedLoanAmountFacilityNewapp,jdbcType=VARCHAR},
+      </if>
+      <if test="approvedInterestRateNewapp != null">
+        #{approvedInterestRateNewapp,jdbcType=VARCHAR},
+      </if>
+      <if test="approvedDurationNewapp != null">
+        #{approvedDurationNewapp,jdbcType=VARCHAR},
+      </if>
+      <if test="dateOfDrawdownSubmission != null">
+        #{dateOfDrawdownSubmission,jdbcType=TIMESTAMP},
+      </if>
+      <if test="currencyDrawdownSubmission != null">
+        #{currencyDrawdownSubmission,jdbcType=VARCHAR},
+      </if>
+      <if test="drawdownAmtSubmission != null">
+        #{drawdownAmtSubmission,jdbcType=VARCHAR},
+      </if>
+      <if test="applStatusDrawdown != null">
+        #{applStatusDrawdown,jdbcType=VARCHAR},
+      </if>
+      <if test="confirmLetterIssueDateDrawdown != null">
+        #{confirmLetterIssueDateDrawdown,jdbcType=TIMESTAMP},
+      </if>
+      <if test="rejectLetterDateDrawdown != null">
+        #{rejectLetterDateDrawdown,jdbcType=TIMESTAMP},
+      </if>
+      <if test="returnLetterDateDrawdown != null">
+        #{returnLetterDateDrawdown,jdbcType=TIMESTAMP},
+      </if>
+      <if test="applRejectWithdlDateDrawdown != null">
+        #{applRejectWithdlDateDrawdown,jdbcType=TIMESTAMP},
+      </if>
+      <if test="approvedDateOfDrawdown != null">
+        #{approvedDateOfDrawdown,jdbcType=TIMESTAMP},
+      </if>
+      <if test="currencyApprovedDrawdown != null">
+        #{currencyApprovedDrawdown,jdbcType=VARCHAR},
+      </if>
+      <if test="approvedDrawdownAmt != null">
+        #{approvedDrawdownAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="expiryDateOfTheLoanRenewalSubmission != null">
+        #{expiryDateOfTheLoanRenewalSubmission,jdbcType=TIMESTAMP},
+      </if>
+      <if test="applStatusRenewal != null">
+        #{applStatusRenewal,jdbcType=VARCHAR},
+      </if>
+      <if test="applLetterIssueDateRenewal != null">
+        #{applLetterIssueDateRenewal,jdbcType=TIMESTAMP},
+      </if>
+      <if test="finalApplLetterDateRenewal != null">
+        #{finalApplLetterDateRenewal,jdbcType=TIMESTAMP},
+      </if>
+      <if test="rejectLetterDateRenewal != null">
+        #{rejectLetterDateRenewal,jdbcType=TIMESTAMP},
+      </if>
+      <if test="returnLetterDateRenewal != null">
+        #{returnLetterDateRenewal,jdbcType=TIMESTAMP},
+      </if>
+      <if test="loanExpiryDateApprovrdRenewal != null">
+        #{loanExpiryDateApprovrdRenewal,jdbcType=TIMESTAMP},
+      </if>
+      <if test="proposeVariationVarSubmission != null">
+        #{proposeVariationVarSubmission,jdbcType=VARCHAR},
+      </if>
+      <if test="applStatusVar != null">
+        #{applStatusVar,jdbcType=VARCHAR},
+      </if>
+      <if test="applLetterIssuedDateVar != null">
+        #{applLetterIssuedDateVar,jdbcType=TIMESTAMP},
+      </if>
+      <if test="rejectLetterIssuedDateVar != null">
+        #{rejectLetterIssuedDateVar,jdbcType=TIMESTAMP},
+      </if>
+      <if test="returnLetterDateVar != null">
+        #{returnLetterDateVar,jdbcType=TIMESTAMP},
+      </if>
+      <if test="applRejectWithdlDateVar != null">
+        #{applRejectWithdlDateVar,jdbcType=TIMESTAMP},
+      </if>
+      <if test="applVariationLoanAgreement != null">
+        #{applVariationLoanAgreement,jdbcType=VARCHAR},
+      </if>
+      <if test="dateOfRepaymentSubmission != null">
+        #{dateOfRepaymentSubmission,jdbcType=TIMESTAMP},
+      </if>
+      <if test="currencyRepaymentSubmission != null">
+        #{currencyRepaymentSubmission,jdbcType=VARCHAR},
+      </if>
+      <if test="repaymentAmtSubmission != null">
+        #{repaymentAmtSubmission,jdbcType=DECIMAL},
+      </if>
+      <if test="applStatusRepayment != null">
+        #{applStatusRepayment,jdbcType=VARCHAR},
+      </if>
+      <if test="priorConsentLetterIssuedDateRepayment != null">
+        #{priorConsentLetterIssuedDateRepayment,jdbcType=TIMESTAMP},
+      </if>
+      <if test="applLetterIssuedDateRepayment != null">
+        #{applLetterIssuedDateRepayment,jdbcType=TIMESTAMP},
+      </if>
+      <if test="rejectLetterIssuedDateRepayment != null">
+        #{rejectLetterIssuedDateRepayment,jdbcType=TIMESTAMP},
+      </if>
+      <if test="returnLetterDateRepayment != null">
+        #{returnLetterDateRepayment,jdbcType=TIMESTAMP},
+      </if>
+      <if test="applRejectWithdlDateRepayment != null">
+        #{applRejectWithdlDateRepayment,jdbcType=TIMESTAMP},
+      </if>
+      <if test="approvedDateOfRepayment != null">
+        #{approvedDateOfRepayment,jdbcType=TIMESTAMP},
+      </if>
+      <if test="approvedCurrencyRepayment != null">
+        #{approvedCurrencyRepayment,jdbcType=VARCHAR},
+      </if>
+      <if test="approvedRepaymentAmt != null">
+        #{approvedRepaymentAmt,jdbcType=DECIMAL},
+      </if>
+      <if test="proposeAmendmentConditionSubmission != null">
+        #{proposeAmendmentConditionSubmission,jdbcType=VARCHAR},
+      </if>
+      <if test="applStatusAmendmentCondition != null">
+        #{applStatusAmendmentCondition,jdbcType=VARCHAR},
+      </if>
+      <if test="inprincipleApplLetterIssuedDateAmendmentCondition != null">
+        #{inprincipleApplLetterIssuedDateAmendmentCondition,jdbcType=TIMESTAMP},
+      </if>
+      <if test="applLetterIssuedDateAmendmentCondition != null">
+        #{applLetterIssuedDateAmendmentCondition,jdbcType=TIMESTAMP},
+      </if>
+      <if test="rejectLetterIssuedDateAmendmentCondition != null">
+        #{rejectLetterIssuedDateAmendmentCondition,jdbcType=TIMESTAMP},
+      </if>
+      <if test="returnLetterDateAmendmentCondition != null">
+        #{returnLetterDateAmendmentCondition,jdbcType=TIMESTAMP},
+      </if>
+      <if test="applRejectWithdlDateAmendmentCondition != null">
+        #{applRejectWithdlDateAmendmentCondition,jdbcType=TIMESTAMP},
+      </if>
+      <if test="approvedAmendmentCondition != null">
+        #{approvedAmendmentCondition,jdbcType=VARCHAR},
+      </if>
+      <if test="dateOfTermSubmission != null">
+        #{dateOfTermSubmission,jdbcType=TIMESTAMP},
+      </if>
+      <if test="applStatusTerm != null">
+        #{applStatusTerm,jdbcType=VARCHAR},
+      </if>
+      <if test="applLetterIssueDateTerm != null">
+        #{applLetterIssueDateTerm,jdbcType=TIMESTAMP},
+      </if>
+      <if test="finalApplLetterDateTerm != null">
+        #{finalApplLetterDateTerm,jdbcType=TIMESTAMP},
+      </if>
+      <if test="rejectLetterDateTerm != null">
+        #{rejectLetterDateTerm,jdbcType=TIMESTAMP},
+      </if>
+      <if test="returnLetterDateTerm != null">
+        #{returnLetterDateTerm,jdbcType=TIMESTAMP},
+      </if>
+      <if test="loanExpiryDateApprovrdTerm != null">
+        #{loanExpiryDateApprovrdTerm,jdbcType=TIMESTAMP},
+      </if>
+      <if test="approvedDateOfTerm != null">
+        #{approvedDateOfTerm,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastApplExtRenewDateMovement != null">
+        #{lastApplExtRenewDateMovement,jdbcType=TIMESTAMP},
+      </if>
+      <if test="loanExpiryDateMovement != null">
+        #{loanExpiryDateMovement,jdbcType=TIMESTAMP},
+      </if>
+      <if test="expiredLoanMovement != null">
+        #{expiredLoanMovement,jdbcType=VARCHAR},
+      </if>
+      <if test="termDateBorrowerLoanMovement != null">
+        #{termDateBorrowerLoanMovement,jdbcType=TIMESTAMP},
+      </if>
+      <if test="termDateSfcLoanMovement != null">
+        #{termDateSfcLoanMovement,jdbcType=TIMESTAMP},
+      </if>
+      <if test="variationOfTermsApprovalLoanMovement != null">
+        #{variationOfTermsApprovalLoanMovement,jdbcType=VARCHAR},
+      </if>
+      <if test="impositionAmendmentRevocationConditionApprlSfcMovement != null">
+        #{impositionAmendmentRevocationConditionApprlSfcMovement,jdbcType=VARCHAR},
+      </if>
+      <if test="currencyLoanMovement != null">
+        #{currencyLoanMovement,jdbcType=VARCHAR},
+      </if>
+      <if test="facilityLimitLoanMovement != null">
+        #{facilityLimitLoanMovement,jdbcType=DECIMAL},
+      </if>
+      <if test="loanAmtMovement != null">
+        #{loanAmtMovement,jdbcType=DECIMAL},
+      </if>
+      <if test="outstandingLoanAmtMovement != null">
+        #{outstandingLoanAmtMovement,jdbcType=DECIMAL},
+      </if>
+      <if test="creationDate != null">
+        #{creationDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastUpdateDate != null">
+        #{lastUpdateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdatedBy != null">
+        #{lastUpdatedBy,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <insert id="batchInsert" >
+      INSERT INTO YOUR_TABLE_NAME (CASE_ID, FORM_TYPE, APPL_DATE,
+    ASSO_LOAN_ID, CEREF, FEE_RECEIVED_MASTER,
+    FEE_PAYMENT_RECEIPT_DATE, ACKNOWLEDGING_APPLICATION_RECEIPT_DATE,
+    ACKNOWLEDGING_FEE_PAYMENT_RECEIPT_DATE, MEET_PERFORMANCE_PLEDGE,
+    LOAN_AGREE_DATE, CURRENCY_MASTER, LOAN_FACILITY_AMT,
+    BORROWER, LENDER_NAME_1, LENDER_NAME_2,
+    LENDER_NAME_3, LENDER_NAME_4, LENDER_NAME_5,
+    LOAN_TYPE_NEWAPP_SUBMISSION, CURRENCY_NEWAPP_SUBMISSION,
+    LOAN_FACILITY_AMOUNT_NEWAPP_SUBMISSION, INTEREST_RATE_NEWAPP_SUBMISSION,
+    DURATION_NEWAPP_SUBMISSION, APPL_STATUS_NEWAPP,
+    INPRINCIPLE_APPL_LETTER_ISSUED_DATE_NEWAPP, FINAL_APPL_LETTER_DATE_NEWAPP,
+    REJECT_LETTER_DATE_NEWAPP, RETURN_LETTER_DATE_NEWAPP,
+    APPL_REJECT_WITHDL_DATE_NEWAPP, LOAN_AGREEMENT_DATE_NEWAPP,
+    LOAN_EXPIRY_DATE_NEWAPP, APPROVED_CURRENCY_NEWAPP,
+    APPROVED_LOAN_AMOUNT_FACILITY_NEWAPP, APPROVED_INTEREST_RATE_NEWAPP,
+    APPROVED_DURATION_NEWAPP, DATE_OF_DRAWDOWN_SUBMISSION,
+    CURRENCY_DRAWDOWN_SUBMISSION, DRAWDOWN_AMT_SUBMISSION,
+    APPL_STATUS_DRAWDOWN, CONFIRM_LETTER_ISSUE_DATE_DRAWDOWN,
+    REJECT_LETTER_DATE_DRAWDOWN, RETURN_LETTER_DATE_DRAWDOWN,
+    APPL_REJECT_WITHDL_DATE_DRAWDOWN, APPROVED_DATE_OF_DRAWDOWN,
+    CURRENCY_APPROVED_DRAWDOWN, APPROVED_DRAWDOWN_AMT,
+    EXPIRY_DATE_OF_THE_LOAN_RENEWAL_SUBMISSION, APPL_STATUS_RENEWAL,
+    APPL_LETTER_ISSUE_DATE_RENEWAL, FINAL_APPL_LETTER_DATE_RENEWAL,
+    REJECT_LETTER_DATE_RENEWAL, RETURN_LETTER_DATE_RENEWAL,
+    LOAN_EXPIRY_DATE_APPROVRD_RENEWAL, PROPOSE_VARIATION_VAR_SUBMISSION,
+    APPL_STATUS_VAR, APPL_LETTER_ISSUED_DATE_VAR,
+    REJECT_LETTER_ISSUED_DATE_VAR, RETURN_LETTER_DATE_VAR,
+    APPL_REJECT_WITHDL_DATE_VAR, APPL_VARIATION_LOAN_AGREEMENT,
+    DATE_OF_REPAYMENT_SUBMISSION, CURRENCY_REPAYMENT_SUBMISSION,
+    REPAYMENT_AMT_SUBMISSION, APPL_STATUS_REPAYMENT,
+    PRIOR_CONSENT_LETTER_ISSUED_DATE_REPAYMENT, APPL_LETTER_ISSUED_DATE_REPAYMENT,
+    REJECT_LETTER_ISSUED_DATE_REPAYMENT, RETURN_LETTER_DATE_REPAYMENT,
+    APPL_REJECT_WITHDL_DATE_REPAYMENT, APPROVED_DATE_OF_REPAYMENT,
+    APPROVED_CURRENCY_REPAYMENT, APPROVED_REPAYMENT_AMT,
+    PROPOSE_AMENDMENT_CONDITION_SUBMISSION, APPL_STATUS_AMENDMENT_CONDITION,
+    INPRINCIPLE_APPL_LETTER_ISSUED_DATE_AMENDMENT_CONDITION, APPL_LETTER_ISSUED_DATE_AMENDMENT_CONDITION,
+    REJECT_LETTER_ISSUED_DATE_AMENDMENT_CONDITION, RETURN_LETTER_DATE_AMENDMENT_CONDITION,
+    APPL_REJECT_WITHDL_DATE_AMENDMENT_CONDITION, APPROVED_AMENDMENT_CONDITION,
+    DATE_OF_TERM_SUBMISSION, APPL_STATUS_TERM,
+    APPL_LETTER_ISSUE_DATE_TERM, FINAL_APPL_LETTER_DATE_TERM,
+    REJECT_LETTER_DATE_TERM, RETURN_LETTER_DATE_TERM,
+    LOAN_EXPIRY_DATE_APPROVRD_TERM, APPROVED_DATE_OF_TERM,
+    LAST_APPL_EXT_RENEW_DATE_MOVEMENT, LOAN_EXPIRY_DATE_MOVEMENT,
+    EXPIRED_LOAN_MOVEMENT, TERM_DATE_BORROWER_LOAN_MOVEMENT,
+    TERM_DATE_SFC_LOAN_MOVEMENT, VARIATION_OF_TERMS_APPROVAL_LOAN_MOVEMENT,
+    IMPOSITION_AMENDMENT_REVOCATION_CONDITION_APPRL_SFC_MOVEMENT, CURRENCY_LOAN_MOVEMENT,
+    FACILITY_LIMIT_LOAN_MOVEMENT, LOAN_AMT_MOVEMENT,
+    OUTSTANDING_LOAN_AMT_MOVEMENT, CREATION_DATE,
+    CREATED_BY, LAST_UPDATE_DATE, LAST_UPDATED_BY
+    )
+
+    <foreach collection="list" item="item"  separator="UNION ALL">
+      SELECT
+      #{item.caseId, jdbcType=VARCHAR},
+      #{item.formType, jdbcType=VARCHAR},
+      #{item.applDate, jdbcType=DATE},
+      #{item.assoLoanId, jdbcType=VARCHAR},
+      #{item.ceref, jdbcType=VARCHAR},
+      #{item.feeReceivedMaster, jdbcType=VARCHAR},
+      #{item.feePaymentReceiptDate, jdbcType=DATE},
+      #{item.acknowledgingApplicationReceiptDate, jdbcType=DATE},
+      #{item.acknowledgingFeePaymentReceiptDate, jdbcType=DATE},
+      #{item.meetPerformancePledge, jdbcType=VARCHAR},
+      #{item.loanAgreeDate, jdbcType=DATE},
+      #{item.currencyMaster, jdbcType=VARCHAR},
+      #{item.loanFacilityAmt, jdbcType=DECIMAL},
+      #{item.borrower, jdbcType=VARCHAR},
+      #{item.lenderName1, jdbcType=VARCHAR},
+      #{item.lenderName2, jdbcType=VARCHAR},
+      #{item.lenderName3, jdbcType=VARCHAR},
+      #{item.lenderName4, jdbcType=VARCHAR},
+      #{item.lenderName5, jdbcType=VARCHAR},
+      #{item.loanTypeNewappSubmission, jdbcType=VARCHAR},
+      #{item.currencyNewappSubmission, jdbcType=VARCHAR},
+      #{item.loanFacilityAmountNewappSubmission, jdbcType=DECIMAL},
+      #{item.interestRateNewappSubmission, jdbcType=VARCHAR},
+      #{item.durationNewappSubmission, jdbcType=VARCHAR},
+      #{item.applStatusNewapp, jdbcType=VARCHAR},
+      #{item.inprincipleApplLetterIssuedDateNewapp, jdbcType=DATE},
+      #{item.finalApplLetterDateNewapp, jdbcType=DATE},
+      #{item.rejectLetterDateNewapp, jdbcType=DATE},
+      #{item.returnLetterDateNewapp, jdbcType=DATE},
+      #{item.applRejectWithdlDateNewapp, jdbcType=DATE},
+      #{item.loanAgreementDateNewapp, jdbcType=DATE},
+      #{item.loanExpiryDateNewapp, jdbcType=DATE},
+      #{item.approvedCurrencyNewapp, jdbcType=VARCHAR},
+      #{item.approvedLoanAmountFacilityNewapp, jdbcType=VARCHAR},
+      #{item.approvedInterestRateNewapp, jdbcType=VARCHAR},
+      #{item.approvedDurationNewapp, jdbcType=VARCHAR},
+      #{item.dateOfDrawdownSubmission, jdbcType=DATE},
+      #{item.currencyDrawdownSubmission, jdbcType=VARCHAR},
+      #{item.drawdownAmtSubmission, jdbcType=VARCHAR},
+      #{item.applStatusDrawdown, jdbcType=VARCHAR},
+      #{item.confirmLetterIssueDateDrawdown, jdbcType=DATE},
+      #{item.rejectLetterDateDrawdown, jdbcType=DATE},
+      #{item.returnLetterDateDrawdown, jdbcType=DATE},
+      #{item.applRejectWithdlDateDrawdown, jdbcType=DATE},
+      #{item.approvedDateOfDrawdown, jdbcType=DATE},
+      #{item.currencyApprovedDrawdown, jdbcType=VARCHAR},
+      #{item.approvedDrawdownAmt, jdbcType=DECIMAL},
+      #{item.expiryDateOfTheLoanRenewalSubmission, jdbcType=DATE},
+      #{item.applStatusRenewal, jdbcType=VARCHAR},
+      #{item.applLetterIssueDateRenewal, jdbcType=DATE},
+      #{item.finalApplLetterDateRenewal, jdbcType=DATE},
+      #{item.rejectLetterDateRenewal, jdbcType=DATE},
+      #{item.returnLetterDateRenewal, jdbcType=DATE},
+      #{item.loanExpiryDateApprovrdRenewal, jdbcType=DATE},
+      #{item.proposeVariationVarSubmission, jdbcType=VARCHAR},
+      #{item.applStatusVar, jdbcType=VARCHAR},
+      #{item.applLetterIssuedDateVar, jdbcType=DATE},
+      #{item.rejectLetterIssuedDateVar, jdbcType=DATE},
+      #{item.returnLetterDateVar, jdbcType=DATE},
+      #{item.applRejectWithdlDateVar, jdbcType=DATE},
+      #{item.applVariationLoanAgreement, jdbcType=VARCHAR},
+      #{item.dateOfRepaymentSubmission, jdbcType=DATE},
+      #{item.currencyRepaymentSubmission, jdbcType=VARCHAR},
+      #{item.repaymentAmtSubmission, jdbcType=DECIMAL},
+      #{item.applStatusRepayment, jdbcType=VARCHAR},
+      #{item.priorConsentLetterIssuedDateRepayment, jdbcType=DATE},
+      #{item.applLetterIssuedDateRepayment, jdbcType=DATE},
+      #{item.rejectLetterIssuedDateRepayment, jdbcType=DATE},
+      #{item.returnLetterDateRepayment, jdbcType=DATE},
+      #{item.applRejectWithdlDateRepayment, jdbcType=DATE},
+      #{item.approvedDateOfRepayment, jdbcType=DATE},
+      #{item.approvedCurrencyRepayment, jdbcType=VARCHAR},
+      #{item.approvedRepaymentAmt, jdbcType=DECIMAL},
+      #{item.proposeAmendmentConditionSubmission, jdbcType=VARCHAR},
+      #{item.applStatusAmendmentCondition, jdbcType=VARCHAR},
+      #{item.inprincipleApplLetterIssuedDateAmendmentCondition, jdbcType=DATE},
+      #{item.applLetterIssuedDateAmendmentCondition, jdbcType=DATE},
+      #{item.rejectLetterIssuedDateAmendmentCondition, jdbcType=DATE},
+      #{item.returnLetterDateAmendmentCondition, jdbcType=DATE},
+      #{item.applRejectWithdlDateAmendmentCondition, jdbcType=DATE},
+      #{item.approvedAmendmentCondition, jdbcType=VARCHAR},
+      #{item.dateOfTermSubmission, jdbcType=DATE},
+      #{item.applStatusTerm, jdbcType=VARCHAR},
+      #{item.applLetterIssueDateTerm, jdbcType=DATE},
+      #{item.finalApplLetterDateTerm, jdbcType=DATE},
+      #{item.rejectLetterDateTerm, jdbcType=DATE},
+      #{item.returnLetterDateTerm, jdbcType=DATE},
+      #{item.loanExpiryDateApprovrdTerm, jdbcType=DATE},
+      #{item.approvedDateOfTerm, jdbcType=DATE},
+      #{item.lastApplExtRenewDateMovement, jdbcType=DATE},
+      #{item.loanExpiryDateMovement, jdbcType=DATE},
+      #{item.expiredLoanMovement, jdbcType=VARCHAR},
+      #{item.termDateBorrowerLoanMovement, jdbcType=DATE},
+      #{item.termDateSfcLoanMovement, jdbcType=DATE},
+      #{item.variationOfTermsApprovalLoanMovement, jdbcType=VARCHAR},
+      #{item.impositionAmendmentRevocationConditionApprlSfcMovement, jdbcType=VARCHAR},
+      #{item.currencyLoanMovement, jdbcType=VARCHAR},
+      #{item.facilityLimitLoanMovement, jdbcType=DECIMAL},
+      #{item.loanAmtMovement, jdbcType=DECIMAL},
+      #{item.outstandingLoanAmtMovement, jdbcType=DECIMAL},
+      #{item.creationDate, jdbcType=DATE},
+      #{item.createdBy, jdbcType=VARCHAR},
+      #{item.lastUpdateDate, jdbcType=DATE},
+      #{item.lastUpdatedBy, jdbcType=VARCHAR}
+      FROM DUAL
+    </foreach>
+
+
+  </insert>
+</mapper>

@@ -1,6 +1,8 @@
 package com.kinetix.surveyengine.entity;
 
 import java.math.BigDecimal;
+import java.security.Timestamp;
+
 import lombok.Data;
 
 
@@ -16,6 +18,16 @@ public class Survey {
     private byte[] excel;
 
     private BigDecimal surveyType;
+
+    private Timestamp createDate;
+
+    public void setExpiryDate(Timestamp createDate) {
+        this.createDate = createDate;
+    }
+
+    public Timestamp getExpiryDate() {
+        return createDate;
+    }
 
     public BigDecimal getVersion() {
         return version;
