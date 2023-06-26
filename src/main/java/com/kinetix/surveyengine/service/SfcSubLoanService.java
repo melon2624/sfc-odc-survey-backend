@@ -61,12 +61,12 @@ public class SfcSubLoanService {
         int formRow = cellCollectionFrom.getMaxDataRow();
         int formColumn = cellCollectionFrom.getMaxDataColumn();
         LinkedHashMap<Integer, LinkedHashMap<String, String>> dataMigrationMap = new LinkedHashMap<>();
-        LinkedHashMap<Integer, LinkedHashMap<String, String>> allrowMap = new LinkedHashMap<>();
+        LinkedHashMap<Integer, LinkedHashMap<Integer, String>> allcolumnMap = new LinkedHashMap<>();
         LinkedHashMap<String, String> errorAllMap = new LinkedHashMap();
         try {
             HashSet<String> caseIdSet = new HashSet<>();
 
-            for (int i = 2; i <= row-4; i++) {
+            for (int i = 2; i <= row - 4; i++) {
 
                 LinkedHashMap<String, String> rowMap = new LinkedHashMap<>();
 
@@ -89,45 +89,56 @@ public class SfcSubLoanService {
             Integer key = entry.getKey();
             LinkedHashMap<String, String> value = entry.getValue();
             String mapping = value.get("Mapping");
-            if (mapping.equals("AB")){
-                System.out.printf("----");
-            }
+            LinkedHashMap<Integer, String> columnMap = new LinkedHashMap<>();
             Integer column = StringUtil.columnToIndex(mapping);
+            System.out.println(key + "----------------");
             for (int j = 3; j <= formRow; j++) {
                 Cell cell = cellCollectionFrom.get(j, column);
-                LinkedHashMap<String, String> rowMap = new LinkedHashMap<>();
-                checkCell(cell, value, errorAllMap, rowMap);
-                allrowMap.put(j, rowMap);
+                checkCell(cell, value, errorAllMap, columnMap);
+                //allcolumnMap.put(j, columnMap);
             }
+            allcolumnMap.put(key, columnMap);
         }
-   /*     JSONObject jsonObject = null;
-        if (!subLoanErrorMap.isEmpty()) {
-            jsonObject = JSONObject.parseObject(JSON.toJSONString(subLoanErrorMap));
+        JSONObject jsonObject = null;
+        if (!errorAllMap.isEmpty()) {
+            StringBuilder sb = new StringBuilder();
+            for (String script : errorAllMap.values()) {
+                sb.append(script).append("\n");
+            }
+            String content = sb.toString(); // 获取字符串内容
+            response.setContentType("text/plain; charset=UTF-8");
+            response.setHeader("Content-Disposition", "attachment; filename=error.txt");
+            OutputStream outputStream = response.getOutputStream();
+            outputStream.write(content.getBytes("UTF-8"));
+            outputStream.flush();
+            outputStream.close();
 
-            System.out.println(JSON.toJSONString(subLoanErrorMap));
+            jsonObject = JSONObject.parseObject(JSON.toJSONString(errorAllMap));
+
+            System.out.println(JSON.toJSONString(errorAllMap));
 
             return RetResponse.say(500, "error", jsonObject);
         } else {
-            saveSubLoanMap(subLoanMap, response);
+            saveSubLoanMap(allcolumnMap, dataMigrationMap, response);
             return RetResponse.say(200, "success", jsonObject);
-        }*/
-        return null;
+        }
+        // return null;
     }
 
-    private void checkCell(Cell cell, LinkedHashMap<String, String> valueMap, LinkedHashMap<String, String> errorMap, LinkedHashMap<String, String> rowMap) {
+    private void checkCell(Cell cell, LinkedHashMap<String, String> valueMap, LinkedHashMap<String, String> errorMap, LinkedHashMap<Integer, String> columnMap) {
 
         String dataType = valueMap.get("dataType");
 
         if (dataType.equals("VARCHAR2")) {
-            checkVarcharCell(cell, valueMap, errorMap, rowMap);
+            checkVarcharCell(cell, valueMap, errorMap, columnMap);
         } else if (dataType.equals("DATE")) {
-            checkDateCell(cell, valueMap, errorMap, rowMap);
+            checkDateCell(cell, valueMap, errorMap, columnMap);
         } else if (dataType.equals("NUMBER")) {
-            checkNumber(cell, valueMap, errorMap, rowMap);
+            checkNumber(cell, valueMap, errorMap, columnMap);
         }
     }
 
-    private void checkNumber(Cell cell, LinkedHashMap<String, String> valueMap, LinkedHashMap<String, String> errorMap, LinkedHashMap<String, String> rowMap) {
+    private void checkNumber(Cell cell, LinkedHashMap<String, String> valueMap, LinkedHashMap<String, String> errorMap, LinkedHashMap<Integer, String> columnMap) {
 
         int row = cell.getRow() + 1;
         String column = valueMap.get("Mapping");
@@ -149,18 +160,18 @@ public class SfcSubLoanService {
                     errorMap.put(column, errorMessage);
                 } else {
                     BigDecimal numberValue = new BigDecimal(cell.getValue().toString());
-                    rowMap.put(column, numberValue.toPlainString());
+                    columnMap.put(cell.getRow(), numberValue.toPlainString());
                 }
             }
         }
-        if (StringUtils.isEmpty(errorMessage) && rowMap.get(column) == null) {
-            rowMap.put(column, null);
+        if (StringUtils.isEmpty(errorMessage) && columnMap.get(cell.getRow()) == null) {
+            columnMap.put(cell.getRow(), null);
         }
         return;
 
     }
 
-    private void checkDateCell(Cell cell, LinkedHashMap<String, String> valueMap, LinkedHashMap<String, String> errorMap, LinkedHashMap<String, String> rowMap) {
+    private void checkDateCell(Cell cell, LinkedHashMap<String, String> valueMap, LinkedHashMap<String, String> errorMap, LinkedHashMap<Integer, String> columnMap) {
 
         int row = cell.getRow() + 1;
         String column = valueMap.get("Mapping");
@@ -185,12 +196,12 @@ public class SfcSubLoanService {
             }
         }
         if (StringUtils.isEmpty(errorMessage)) {
-            rowMap.put(column, dateCell);
+            columnMap.put(cell.getRow(), dateCell);
         }
         return;
     }
 
-    private void checkVarcharCell(Cell cell, LinkedHashMap<String, String> valueMap, LinkedHashMap<String, String> errorMap, LinkedHashMap<String, String> rowMap) {
+    private void checkVarcharCell(Cell cell, LinkedHashMap<String, String> valueMap, LinkedHashMap<String, String> errorMap, LinkedHashMap<Integer, String> columnMap) {
 
         int row = cell.getRow() + 1;
         String column = valueMap.get("Mapping");
@@ -210,7 +221,7 @@ public class SfcSubLoanService {
                     errorMap.put(column, errorMessage);
                 } else {
                     //  System.out.println(cell.getValue().toString() + " , ");
-                    rowMap.put(column, cell.getValue().toString());
+                    columnMap.put(cell.getRow(), cell.getValue().toString());
                 }
             }
         } else {
@@ -222,361 +233,101 @@ public class SfcSubLoanService {
                     logger.error(errorMessage);
                     errorMap.put(column, errorMessage);
                 } else {
-                    errorMap.put(column, cell.getValue().toString());
+                    columnMap.put(cell.getRow(), cell.getValue().toString());
                 }
             }
         }
-        if (StringUtils.isEmpty(errorMessage) && rowMap.get(column) == null) {
-            rowMap.put(column, null);
+        if (StringUtils.isEmpty(errorMessage) && columnMap.get(cell.getRow()) == null) {
+            columnMap.put(cell.getRow(), null);
         }
         return;
 
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void saveSubLoanMap(LinkedHashMap<Integer, LinkedHashMap<String, String>> subLoanMap, HttpServletResponse response) throws IOException {
+    public void saveSubLoanMap(LinkedHashMap<Integer, LinkedHashMap<Integer, String>> subLoanMap, LinkedHashMap<Integer, LinkedHashMap<String, String>> dataMigrationMap, HttpServletResponse response) throws IOException {
         List<SubLoan> subLoanList = new ArrayList<>();
+        StringBuilder insertSql = new StringBuilder();
         try {
 
-            for (Map.Entry<Integer, LinkedHashMap<String, String>> mapEntry : subLoanMap.entrySet()) {
-                LinkedHashMap<String, String> subMap = mapEntry.getValue();
-                SubLoan subLoan = new SubLoan();
-                subLoan.setCaseId(subMap.get("A"));
-                subLoan.setFormType(subMap.get("B"));
-                subLoan.setApplDate(DateUtils.StringToDate(subMap.get("C")));
-                subLoan.setAssoLoanId(subMap.get("D"));
-                subLoan.setCeref(subMap.get("E"));
-                subLoan.setFeeReceivedMaster(subMap.get("F"));
-                subLoan.setFeePaymentReceiptDate(DateUtils.StringToDate(subMap.get("G")));
-                subLoan.setAcknowledgingApplicationReceiptDate(DateUtils.StringToDate(subMap.get("H")));
-                subLoan.setAcknowledgingFeePaymentReceiptDate(DateUtils.StringToDate(subMap.get("I")));
-                subLoan.setMeetPerformancePledge(subMap.get("J"));
-                subLoan.setLoanAgreeDate(DateUtils.StringToDate(subMap.get("K")));
-                subLoan.setCurrencyMaster(subMap.get("L"));
-                subLoan.setLoanFacilityAmt(StringUtils.isEmpty(subMap.get("M")) ? null : new BigDecimal(subMap.get("M")));
-                subLoan.setBorrower(subMap.get("P"));
-                subLoan.setLenderName1(subMap.get("Q"));
-                subLoan.setLenderName2(subMap.get("R"));
-                subLoan.setLenderName3(subMap.get("S"));
-                subLoan.setLenderName4(subMap.get("T"));
-                subLoan.setLenderName5(subMap.get("U"));
-                subLoan.setLoanTypeNewappSubmission(subMap.get("V"));
-                subLoan.setCurrencyNewappSubmission(subMap.get("W"));
-                subLoan.setLoanFacilityAmountNewappSubmission(StringUtils.isEmpty(subMap.get("X")) ? null : new BigDecimal(subMap.get("X")));
-                subLoan.setInterestRateNewappSubmission(subMap.get("Y"));
-                subLoan.setDurationNewappSubmission(subMap.get("Z"));
-                subLoan.setApplStatusNewapp(subMap.get("AA"));
-                subLoan.setInprincipleApplLetterIssuedDateNewapp(DateUtils.StringToDate(subMap.get("AB")));
-                subLoan.setFinalApplLetterDateNewapp(DateUtils.StringToDate(subMap.get("AC")));
-                subLoan.setRejectLetterDateNewapp(DateUtils.StringToDate(subMap.get("AD")));
-                subLoan.setReturnLetterDateNewapp(DateUtils.StringToDate(subMap.get("AE")));
-                subLoan.setApplRejectWithdlDateNewapp(DateUtils.StringToDate(subMap.get("AF")));
-                subLoan.setLoanAgreementDateNewapp(DateUtils.StringToDate(subMap.get("AG")));
-                subLoan.setLoanExpiryDateNewapp(DateUtils.StringToDate(subMap.get("AH")));
-                subLoan.setApprovedCurrencyNewapp(subMap.get("AI"));
-                subLoan.setApprovedLoanAmountFacilityNewapp(subMap.get("AJ"));
-                subLoan.setApprovedInterestRateNewapp(subMap.get("AK"));
-                subLoan.setApprovedDurationNewapp(subMap.get("AL"));
-                subLoan.setDateOfDrawdownSubmission(DateUtils.StringToDate(subMap.get("AN")));
-                subLoan.setCurrencyDrawdownSubmission(subMap.get("AO"));
-                subLoan.setDrawdownAmtSubmission("AP");
-                subLoan.setApplStatusDrawdown("AQ");
-                subLoan.setConfirmLetterIssueDateDrawdown(DateUtils.StringToDate(subMap.get("AR")));
-                subLoan.setRejectLetterDateDrawdown(DateUtils.StringToDate(subMap.get("AS")));
-                subLoan.setReturnLetterDateDrawdown(DateUtils.StringToDate(subMap.get("AT")));
-                subLoan.setApplRejectWithdlDateDrawdown(DateUtils.StringToDate(subMap.get("AU")));
-                subLoan.setApprovedDateOfDrawdown(DateUtils.StringToDate(subMap.get("AV")));
-                subLoan.setCurrencyApprovedDrawdown(subMap.get("AW"));
-                subLoan.setApprovedDrawdownAmt(StringUtils.isEmpty(subMap.get("AX")) ? null : new BigDecimal(subMap.get("AX")));
-                subLoan.setExpiryDateOfTheLoanRenewalSubmission(DateUtils.StringToDate(subMap.get("AZ")));
-                subLoan.setApplStatusRenewal(subMap.get("BA"));
-                subLoan.setApplLetterIssueDateRenewal(DateUtils.StringToDate(subMap.get("BB")));
-                subLoan.setFinalApplLetterDateRenewal(DateUtils.StringToDate(subMap.get("BC")));
-                subLoan.setRejectLetterDateRenewal(DateUtils.StringToDate(subMap.get("BD")));
-                subLoan.setReturnLetterDateRenewal(DateUtils.StringToDate(subMap.get("BE")));
-                subLoan.setLoanExpiryDateApprovrdRenewal(DateUtils.StringToDate(subMap.get("BF")));
-                subLoan.setProposeAmendmentConditionSubmission(subMap.get("BH"));
-                subLoan.setApplStatusVar(subMap.get("BI"));
-                subLoan.setApplLetterIssuedDateVar(DateUtils.StringToDate(subMap.get("BJ")));
-                subLoan.setRejectLetterIssuedDateVar(DateUtils.StringToDate(subMap.get("BK")));
-                subLoan.setReturnLetterDateVar(DateUtils.StringToDate(subMap.get("BL")));
-                subLoan.setApplRejectWithdlDateVar(DateUtils.StringToDate(subMap.get("BM")));
-                subLoan.setApplVariationLoanAgreement(subMap.get("BN"));
-                subLoan.setDateOfRepaymentSubmission(DateUtils.StringToDate(subMap.get("BP")));
-                subLoan.setCurrencyRepaymentSubmission(subMap.get("BQ"));
-                subLoan.setRepaymentAmtSubmission(StringUtils.isEmpty(subMap.get("BR")) ? null : new BigDecimal(subMap.get("BR")));
-                subLoan.setApplStatusRepayment(subMap.get("BS"));
-                subLoan.setPriorConsentLetterIssuedDateRepayment(DateUtils.StringToDate(subMap.get("BT")));
-                subLoan.setApplLetterIssuedDateRepayment(DateUtils.StringToDate(subMap.get("BU")));
-                subLoan.setRejectLetterIssuedDateRepayment(DateUtils.StringToDate(subMap.get("BV")));
-                subLoan.setReturnLetterDateRepayment(DateUtils.StringToDate(subMap.get("BW")));
-                subLoan.setApplRejectWithdlDateRepayment(DateUtils.StringToDate(subMap.get("BX")));
-                subLoan.setApprovedDateOfRepayment(DateUtils.StringToDate(subMap.get("BY")));
-                subLoan.setApprovedCurrencyRepayment(subMap.get("BZ"));
-                subLoan.setApprovedRepaymentAmt(StringUtils.isEmpty(subMap.get("CA")) ? null : new BigDecimal(subMap.get("CA")));
-                subLoan.setProposeAmendmentConditionSubmission(subMap.get("CC"));
-                subLoan.setApplStatusAmendmentCondition(subMap.get("CD"));
-                subLoan.setInprincipleApplLetterIssuedDateAmendmentCondition(DateUtils.StringToDate(subMap.get("CE")));
-                subLoan.setApplLetterIssuedDateAmendmentCondition(DateUtils.StringToDate(subMap.get("CF")));
-                subLoan.setRejectLetterIssuedDateAmendmentCondition(DateUtils.StringToDate(subMap.get("CG")));
-                subLoan.setReturnLetterDateAmendmentCondition(DateUtils.StringToDate(subMap.get("CH")));
-                subLoan.setApplRejectWithdlDateAmendmentCondition(DateUtils.StringToDate(subMap.get("CI")));
-                subLoan.setApprovedAmendmentCondition(subMap.get("CJ"));
-                subLoan.setDateOfTermSubmission(DateUtils.StringToDate(subMap.get("CL")));
-                subLoan.setApplStatusTerm(subMap.get("CM"));
-                subLoan.setApplLetterIssueDateTerm(DateUtils.StringToDate(subMap.get("CN")));
-                subLoan.setFinalApplLetterDateTerm(DateUtils.StringToDate(subMap.get("CO")));
-                subLoan.setRejectLetterDateTerm(DateUtils.StringToDate(subMap.get("CP")));
-                subLoan.setReturnLetterDateTerm(DateUtils.StringToDate(subMap.get("CQ")));
-                subLoan.setLoanExpiryDateApprovrdTerm(DateUtils.StringToDate(subMap.get("CR")));
-                subLoan.setApprovedDateOfTerm(DateUtils.StringToDate(subMap.get("CS")));
-                subLoan.setLastApplExtRenewDateMovement(DateUtils.StringToDate(subMap.get("CU")));
-                subLoan.setLoanExpiryDateMovement(DateUtils.StringToDate(subMap.get("CV")));
-                subLoan.setExpiredLoanMovement(subMap.get("CW"));
-                subLoan.setTermDateBorrowerLoanMovement(DateUtils.StringToDate(subMap.get("CX")));
-                subLoan.setTermDateSfcLoanMovement(DateUtils.StringToDate(subMap.get("CY")));
-                subLoan.setVariationOfTermsApprovalLoanMovement(subMap.get("CZ"));
-                subLoan.setImpositionAmendmentRevocationConditionApprlSfcMovement(subMap.get("DA"));
-                subLoan.setCurrencyLoanMovement(subMap.get("DB"));
-                subLoan.setFacilityLimitLoanMovement(StringUtils.isEmpty(subMap.get("DC")) ? null : new BigDecimal(subMap.get("DC")));
-                subLoan.setLoanAmtMovement(StringUtils.isEmpty(subMap.get("DD")) ? null : new BigDecimal(subMap.get("DD")));
-                subLoan.setOutstandingLoanAmtMovement(StringUtils.isEmpty(subMap.get("DE")) ? null : new BigDecimal(subMap.get("DE")));
-                subLoanList.add(subLoan);
-                // subLoanMapper.insert(subLoan);
-            }
-
-            Set<String> subCaseIdSet = new HashSet<>();
-
-            for (SubLoan subLoan : subLoanList) {
-                boolean add = subCaseIdSet.add(subLoan.getCaseId());
-                if (!add) {
-                    throw new MyRuntimeException(500, "caseId duplicate");
+            insertSql.append("INSERT INTO SL_T_LOAN_MASTER (");
+            int dataMigrationSize = dataMigrationMap.size();
+            int i = 0;
+            for (Map.Entry<Integer, LinkedHashMap<String, String>> dataMigrationEntry : dataMigrationMap.entrySet()) {
+                String columnName = dataMigrationEntry.getValue().get("columnName");
+                i++;
+                if (i < dataMigrationSize) {
+                    insertSql.append(columnName + ",");
+                } else {
+                    insertSql.append(columnName + ") VALUES (");
                 }
             }
 
-            List<String> subLoanScriptList = new ArrayList<>();
-            for (SubLoan subLoan : subLoanList) {
+            LinkedHashMap<Integer, LinkedHashMap<Integer, String>> transposedMap = new LinkedHashMap<>();
+
+            for (Integer column : subLoanMap.keySet()) {
+                LinkedHashMap<Integer, String> columnData = subLoanMap.get(column);
+                for (Integer row : columnData.keySet()) {
+                    LinkedHashMap<Integer, String> rowData = transposedMap.getOrDefault(row, new LinkedHashMap<>());
+                    String cellData = columnData.get(row);
+                    rowData.put(column, cellData);
+                    transposedMap.put(row, rowData);
+                }
+            }
+
+            // 现在 transposedMap 包含了列转行后的数据
+            // 可以遍历 transposedMap 进行进一步操作
+            for (Integer row : transposedMap.keySet()) {
+                LinkedHashMap<Integer, String> rowData = transposedMap.get(row);
+                for (Integer column : rowData.keySet()) {
+
+                    String dataType = dataMigrationMap.get(column).get("dataType");
+                    if (dataType.equals("VARCHAR2")) {
+                        rowData.put(column, stringFormat(rowData.get(column)));
+                    } else if (dataType.equals("DATE")) {
+                        rowData.put(column, StringDateFormat(DateUtils.StringToDate(rowData.get(column))));
+                    } else if (dataType.equals("NUMBER")) {
+                        BigDecimal numberColumn = StringUtils.isEmpty(rowData.get(column)) ? null : new BigDecimal(rowData.get(column));
+                        rowData.put(column, numberFormat(numberColumn));
+                    }
+
+                    String cellData = rowData.get(column);
+                    // 在这里进行遍历后的操作
+                    System.out.println("Row: " + row + ", Column: " + column + ", Data: " + cellData);
+                }
+            }
+
+            List<String> scriptList = new ArrayList<>();
+
+            for (Map.Entry<Integer, LinkedHashMap<Integer, String>> transposedMapEntry : transposedMap.entrySet()) {
+
                 StringBuilder scriptBuilder = new StringBuilder();
-                scriptBuilder.append("INSERT INTO YOUR_TABLE_NAME (");
-                scriptBuilder.append("CASE_ID,");
-                scriptBuilder.append("FORM_TYPE,");
-                scriptBuilder.append("APPL_DATE,");
-                scriptBuilder.append("ASSO_LOAN_ID,");
-                scriptBuilder.append("CEREF,");
-                scriptBuilder.append("FEE_RECEIVED_MASTER,");
-                scriptBuilder.append("FEE_PAYMENT_RECEIPT_DATE,");
-                scriptBuilder.append("ACKNOWLEDGING_APPLICATION_RECEIPT_DATE,");
-                scriptBuilder.append("ACKNOWLEDGING_FEE_PAYMENT_RECEIPT_DATE,");
-                scriptBuilder.append("MEET_PERFORMANCE_PLEDGE,");
-                scriptBuilder.append("LOAN_AGREE_DATE,");
-                scriptBuilder.append("CURRENCY_MASTER,");
-                scriptBuilder.append("LOAN_FACILITY_AMT,");
-                scriptBuilder.append("BORROWER,");
-                scriptBuilder.append("LENDER_NAME_1,");
-                scriptBuilder.append("LENDER_NAME_2,");
-                scriptBuilder.append("LENDER_NAME_3,");
-                scriptBuilder.append("LENDER_NAME_4,");
-                scriptBuilder.append("LENDER_NAME_5,");
-                scriptBuilder.append("LOAN_TYPE_NEWAPP_SUBMISSION,");
-                scriptBuilder.append("CURRENCY_NEWAPP_SUBMISSION,");
-                scriptBuilder.append("LOAN_FACILITY_AMOUNT_NEWAPP_SUBMISSION,");
-                scriptBuilder.append("INTEREST_RATE_NEWAPP_SUBMISSION,");
-                scriptBuilder.append("DURATION_NEWAPP_SUBMISSION,");
-                scriptBuilder.append("APPL_STATUS_NEWAPP,");
-                scriptBuilder.append("INPRINCIPLE_APPL_LETTER_ISSUED_DATE_NEWAPP, ");
-                scriptBuilder.append("FINAL_APPL_LETTER_DATE_NEWAPP, ");
-                scriptBuilder.append("REJECT_LETTER_DATE_NEWAPP, ");
-                scriptBuilder.append("RETURN_LETTER_DATE_NEWAPP, ");
-                scriptBuilder.append("APPL_REJECT_WITHDL_DATE_NEWAPP, ");
-                scriptBuilder.append("LOAN_AGREEMENT_DATE_NEWAPP, ");
-                scriptBuilder.append("LOAN_EXPIRY_DATE_NEWAPP, ");
-                scriptBuilder.append("APPROVED_CURRENCY_NEWAPP, ");
-                scriptBuilder.append("APPROVED_LOAN_AMOUNT_FACILITY_NEWAPP, ");
-                scriptBuilder.append("APPROVED_INTEREST_RATE_NEWAPP, ");
-                scriptBuilder.append("APPROVED_DURATION_NEWAPP, ");
-                scriptBuilder.append("DATE_OF_DRAWDOWN_SUBMISSION, ");
-                scriptBuilder.append("CURRENCY_DRAWDOWN_SUBMISSION, ");
-                scriptBuilder.append("DRAWDOWN_AMT_SUBMISSION, ");
-                scriptBuilder.append("APPL_STATUS_DRAWDOWN, ");
-                scriptBuilder.append("CONFIRM_LETTER_ISSUE_DATE_DRAWDOWN, ");
-                scriptBuilder.append("REJECT_LETTER_DATE_DRAWDOWN, ");
-                scriptBuilder.append("RETURN_LETTER_DATE_DRAWDOWN, ");
-                scriptBuilder.append("APPL_REJECT_WITHDL_DATE_DRAWDOWN, ");
-                scriptBuilder.append("APPROVED_DATE_OF_DRAWDOWN, ");
-                scriptBuilder.append("CURRENCY_APPROVED_DRAWDOWN, ");
-                scriptBuilder.append("APPROVED_DRAWDOWN_AMT, ");
-                scriptBuilder.append("EXPIRY_DATE_OF_THE_LOAN_RENEWAL_SUBMISSION, ");
-                scriptBuilder.append("APPL_STATUS_RENEWAL, ");
-                scriptBuilder.append("APPL_LETTER_ISSUE_DATE_RENEWAL, ");
-                scriptBuilder.append("FINAL_APPL_LETTER_DATE_RENEWAL, ");
-                scriptBuilder.append("REJECT_LETTER_DATE_RENEWAL, ");
-                scriptBuilder.append("RETURN_LETTER_DATE_RENEWAL, ");
-                scriptBuilder.append("LOAN_EXPIRY_DATE_APPROVRD_RENEWAL, ");
-                scriptBuilder.append("PROPOSE_VARIATION_VAR_SUBMISSION, ");
-                scriptBuilder.append("APPL_STATUS_VAR, ");
-                scriptBuilder.append("APPL_LETTER_ISSUED_DATE_VAR, ");
-                scriptBuilder.append("REJECT_LETTER_ISSUED_DATE_VAR, ");
-                scriptBuilder.append("RETURN_LETTER_DATE_VAR, ");
-                scriptBuilder.append("APPL_REJECT_WITHDL_DATE_VAR, ");
-                scriptBuilder.append("APPL_VARIATION_LOAN_AGREEMENT, ");
-                scriptBuilder.append("DATE_OF_REPAYMENT_SUBMISSION, ");
-                scriptBuilder.append("CURRENCY_REPAYMENT_SUBMISSION, ");
-                scriptBuilder.append("REPAYMENT_AMT_SUBMISSION, ");
-                scriptBuilder.append("APPL_STATUS_REPAYMENT, ");
-                scriptBuilder.append("PRIOR_CONSENT_LETTER_ISSUED_DATE_REPAYMENT, ");
-                scriptBuilder.append("APPL_LETTER_ISSUED_DATE_REPAYMENT, ");
-                scriptBuilder.append("REJECT_LETTER_ISSUED_DATE_REPAYMENT, ");
-                scriptBuilder.append("RETURN_LETTER_DATE_REPAYMENT, ");
-                scriptBuilder.append("APPL_REJECT_WITHDL_DATE_REPAYMENT, ");
-                scriptBuilder.append("APPROVED_DATE_OF_REPAYMENT, ");
-                scriptBuilder.append("APPROVED_CURRENCY_REPAYMENT, ");
-                scriptBuilder.append("APPROVED_REPAYMENT_AMT, ");
-                scriptBuilder.append("PROPOSE_AMENDMENT_CONDITION_SUBMISSION, ");
-                scriptBuilder.append("APPL_STATUS_AMENDMENT_CONDITION, ");
-                scriptBuilder.append("INPRINCIPLE_APPL_LETTER_ISSUED_DATE_AMENDMENT_CONDITION, ");
-                scriptBuilder.append("APPL_LETTER_ISSUED_DATE_AMENDMENT_CONDITION, ");
-                scriptBuilder.append("REJECT_LETTER_ISSUED_DATE_AMENDMENT_CONDITION, ");
-                scriptBuilder.append("RETURN_LETTER_DATE_AMENDMENT_CONDITION, ");
-                scriptBuilder.append("APPL_REJECT_WITHDL_DATE_AMENDMENT_CONDITION, ");
-                scriptBuilder.append("APPROVED_AMENDMENT_CONDITION, ");
-                scriptBuilder.append("DATE_OF_TERM_SUBMISSION, ");
-                scriptBuilder.append("APPL_STATUS_TERM, ");
-                scriptBuilder.append("APPL_LETTER_ISSUE_DATE_TERM, ");
-                scriptBuilder.append("FINAL_APPL_LETTER_DATE_TERM, ");
-                scriptBuilder.append("REJECT_LETTER_DATE_TERM, ");
-                scriptBuilder.append("RETURN_LETTER_DATE_TERM, ");
-                scriptBuilder.append("LOAN_EXPIRY_DATE_APPROVRD_TERM, ");
-                scriptBuilder.append("APPROVED_DATE_OF_TERM, ");
-                scriptBuilder.append("LAST_APPL_EXT_RENEW_DATE_MOVEMENT, ");
-                scriptBuilder.append("LOAN_EXPIRY_DATE_MOVEMENT, ");
-                scriptBuilder.append("EXPIRED_LOAN_MOVEMENT, ");
-                scriptBuilder.append("TERM_DATE_BORROWER_LOAN_MOVEMENT, ");
-                scriptBuilder.append("TERM_DATE_SFC_LOAN_MOVEMENT, ");
-                scriptBuilder.append("VARIATION_OF_TERMS_APPROVAL_LOAN_MOVEMENT, ");
-                scriptBuilder.append("IMPOSITION_AMENDMENT_REVOCATION_CONDITION_APPRL_SFC_MOVEMENT, ");
-                scriptBuilder.append("CURRENCY_LOAN_MOVEMENT, ");
-                scriptBuilder.append("FACILITY_LIMIT_LOAN_MOVEMENT, ");
-                scriptBuilder.append("LOAN_AMT_MOVEMENT, ");
-                scriptBuilder.append("OUTSTANDING_LOAN_AMT_MOVEMENT, ");
-                scriptBuilder.append("CREATION_DATE, ");
-                scriptBuilder.append("CREATED_BY, ");
-                scriptBuilder.append("LAST_UPDATE_DATE, ");
-                scriptBuilder.append("LAST_UPDATED_BY)");
-                scriptBuilder.append(" VALUES (");
-                scriptBuilder.append(stringFormat(subLoan.getCaseId()));
-                scriptBuilder.append(stringFormat(subLoan.getFormType()));
-                scriptBuilder.append(StringDateFormat(subLoan.getApplDate()));
-                scriptBuilder.append(stringFormat(subLoan.getAssoLoanId()));
-                scriptBuilder.append(stringFormat(subLoan.getCeref()));
-                scriptBuilder.append(stringFormat(subLoan.getFeeReceivedMaster()));
-                scriptBuilder.append(StringDateFormat(subLoan.getFeePaymentReceiptDate()));
-                scriptBuilder.append(StringDateFormat(subLoan.getAcknowledgingApplicationReceiptDate()));
-                scriptBuilder.append(StringDateFormat(subLoan.getAcknowledgingFeePaymentReceiptDate()));
-                scriptBuilder.append(stringFormat(subLoan.getMeetPerformancePledge()));
-                scriptBuilder.append(StringDateFormat(subLoan.getLoanAgreeDate()));
-                scriptBuilder.append(stringFormat(subLoan.getCurrencyMaster()));
-                scriptBuilder.append(numberFormat(subLoan.getLoanFacilityAmt()));
-                scriptBuilder.append(stringFormat(subLoan.getBorrower()));
-                scriptBuilder.append(stringFormat(subLoan.getLenderName1()));
-                scriptBuilder.append(stringFormat(subLoan.getLenderName2()));
-                scriptBuilder.append(stringFormat(subLoan.getLenderName3()));
-                scriptBuilder.append(stringFormat(subLoan.getLenderName4()));
-                scriptBuilder.append(stringFormat(subLoan.getLenderName5()));
-                scriptBuilder.append(stringFormat(subLoan.getLoanTypeNewappSubmission()));
-                scriptBuilder.append(stringFormat(subLoan.getCurrencyNewappSubmission()));
-                scriptBuilder.append(subLoan.getLoanFacilityAmountNewappSubmission() + ", ");
-                scriptBuilder.append(stringFormat(subLoan.getInterestRateNewappSubmission()));
-                scriptBuilder.append(stringFormat(subLoan.getDurationNewappSubmission()));
-                scriptBuilder.append(stringFormat(subLoan.getApplStatusNewapp()));
-                scriptBuilder.append(StringDateFormat(subLoan.getInprincipleApplLetterIssuedDateNewapp()));
 
-                scriptBuilder.append(StringDateFormat(subLoan.getFinalApplLetterDateNewapp()));
-                scriptBuilder.append(StringDateFormat(subLoan.getRejectLetterDateNewapp()));
-                scriptBuilder.append(StringDateFormat(subLoan.getReturnLetterDateNewapp()));
-                scriptBuilder.append(StringDateFormat(subLoan.getApplRejectWithdlDateNewapp()));
-                scriptBuilder.append(StringDateFormat(subLoan.getLoanAgreementDateNewapp()));
-                scriptBuilder.append(StringDateFormat(subLoan.getLoanExpiryDateNewapp()));
-                scriptBuilder.append(stringFormat(subLoan.getApprovedCurrencyNewapp()));
-                scriptBuilder.append(stringFormat(subLoan.getApprovedLoanAmountFacilityNewapp()));
-                scriptBuilder.append(stringFormat(subLoan.getApprovedInterestRateNewapp()));
-                scriptBuilder.append(stringFormat(subLoan.getApprovedDurationNewapp()));
-                scriptBuilder.append(StringDateFormat(subLoan.getDateOfDrawdownSubmission()));
-                scriptBuilder.append(stringFormat(subLoan.getCurrencyDrawdownSubmission()));
-                scriptBuilder.append(stringFormat(subLoan.getDrawdownAmtSubmission()));
-                scriptBuilder.append(stringFormat(subLoan.getApplStatusDrawdown()));
-                scriptBuilder.append(StringDateFormat(subLoan.getConfirmLetterIssueDateDrawdown()));
-                scriptBuilder.append(StringDateFormat(subLoan.getRejectLetterDateDrawdown()));
-                scriptBuilder.append(StringDateFormat(subLoan.getReturnLetterDateDrawdown()));
-                scriptBuilder.append(StringDateFormat(subLoan.getApplRejectWithdlDateDrawdown()));
-                scriptBuilder.append(StringDateFormat(subLoan.getApprovedDateOfDrawdown()));
-                scriptBuilder.append(stringFormat(subLoan.getCurrencyApprovedDrawdown()));
-                scriptBuilder.append(numberFormat(subLoan.getApprovedDrawdownAmt()));
-                scriptBuilder.append(StringDateFormat(subLoan.getExpiryDateOfTheLoanRenewalSubmission()));
-                scriptBuilder.append(stringFormat(subLoan.getApplStatusRenewal()));
-                scriptBuilder.append(StringDateFormat(subLoan.getApplLetterIssueDateRenewal()));
-                scriptBuilder.append(StringDateFormat(subLoan.getFinalApplLetterDateRenewal()));
-                scriptBuilder.append(StringDateFormat(subLoan.getRejectLetterDateRenewal()));
-                scriptBuilder.append(StringDateFormat(subLoan.getReturnLetterDateRenewal()));
-                scriptBuilder.append(StringDateFormat(subLoan.getLoanExpiryDateApprovrdRenewal()));
-                scriptBuilder.append(stringFormat(subLoan.getProposeVariationVarSubmission()));
-                scriptBuilder.append(stringFormat(subLoan.getApplStatusVar()));
-                scriptBuilder.append(StringDateFormat(subLoan.getApplLetterIssuedDateVar()));
-                scriptBuilder.append(StringDateFormat(subLoan.getRejectLetterIssuedDateVar()));
-                scriptBuilder.append(StringDateFormat(subLoan.getReturnLetterDateVar()));
-                scriptBuilder.append(StringDateFormat(subLoan.getApplRejectWithdlDateVar()));
-                scriptBuilder.append(stringFormat(subLoan.getApplVariationLoanAgreement()));
-                scriptBuilder.append(StringDateFormat(subLoan.getDateOfRepaymentSubmission()));
-                scriptBuilder.append(stringFormat(subLoan.getCurrencyRepaymentSubmission()));
-                scriptBuilder.append(numberFormat(subLoan.getRepaymentAmtSubmission()));
-                scriptBuilder.append(stringFormat(subLoan.getApplStatusRepayment()));
-                scriptBuilder.append(StringDateFormat(subLoan.getPriorConsentLetterIssuedDateRepayment()));
-                scriptBuilder.append(StringDateFormat(subLoan.getApplLetterIssuedDateRepayment()));
-                scriptBuilder.append(StringDateFormat(subLoan.getRejectLetterIssuedDateRepayment()));
-                scriptBuilder.append(StringDateFormat(subLoan.getReturnLetterDateRepayment()));
-                scriptBuilder.append(StringDateFormat(subLoan.getApplRejectWithdlDateRepayment()));
-                scriptBuilder.append(StringDateFormat(subLoan.getApprovedDateOfRepayment()));
-                scriptBuilder.append(stringFormat(subLoan.getApprovedCurrencyRepayment()));
-                scriptBuilder.append(numberFormat(subLoan.getApprovedRepaymentAmt()));
-                scriptBuilder.append(stringFormat(subLoan.getProposeAmendmentConditionSubmission()));
-                scriptBuilder.append(stringFormat(subLoan.getApplStatusAmendmentCondition()));
-                scriptBuilder.append(StringDateFormat(subLoan.getInprincipleApplLetterIssuedDateAmendmentCondition()));
-                scriptBuilder.append(StringDateFormat(subLoan.getApplLetterIssuedDateAmendmentCondition()));
-                scriptBuilder.append(StringDateFormat(subLoan.getRejectLetterIssuedDateAmendmentCondition()));
-                scriptBuilder.append(StringDateFormat(subLoan.getReturnLetterDateAmendmentCondition()));
-                scriptBuilder.append(StringDateFormat(subLoan.getApplRejectWithdlDateAmendmentCondition()));
-                scriptBuilder.append(stringFormat(subLoan.getApprovedAmendmentCondition()));
-                scriptBuilder.append(StringDateFormat(subLoan.getDateOfTermSubmission()));
-                scriptBuilder.append(stringFormat(subLoan.getApplStatusTerm()));
-                scriptBuilder.append(StringDateFormat(subLoan.getApplLetterIssueDateTerm()));
-                scriptBuilder.append(StringDateFormat(subLoan.getFinalApplLetterDateTerm()));
-                scriptBuilder.append(StringDateFormat(subLoan.getRejectLetterDateTerm()));
-                scriptBuilder.append(StringDateFormat(subLoan.getReturnLetterDateTerm()));
-                scriptBuilder.append(StringDateFormat(subLoan.getLoanExpiryDateApprovrdTerm()));
-                scriptBuilder.append(StringDateFormat(subLoan.getApprovedDateOfTerm()));
-                scriptBuilder.append(StringDateFormat(subLoan.getLastApplExtRenewDateMovement()));
-                scriptBuilder.append(StringDateFormat(subLoan.getLoanExpiryDateMovement()));
-                scriptBuilder.append(stringFormat(subLoan.getExpiredLoanMovement()));
-                scriptBuilder.append(StringDateFormat(subLoan.getTermDateBorrowerLoanMovement()));
-                scriptBuilder.append(StringDateFormat(subLoan.getTermDateSfcLoanMovement()));
-                scriptBuilder.append(stringFormat(subLoan.getVariationOfTermsApprovalLoanMovement()));
-                scriptBuilder.append(stringFormat(subLoan.getImpositionAmendmentRevocationConditionApprlSfcMovement()));
-                scriptBuilder.append(stringFormat(subLoan.getCurrencyLoanMovement()));
-                scriptBuilder.append(numberFormat(subLoan.getFacilityLimitLoanMovement()));
-                scriptBuilder.append(numberFormat(subLoan.getLoanAmtMovement()));
-                scriptBuilder.append(numberFormat(subLoan.getOutstandingLoanAmtMovement()));
-                scriptBuilder.append(StringDateFormat(subLoan.getCreationDate()));
-                scriptBuilder.append(stringFormat(subLoan.getCreatedBy()));
-                scriptBuilder.append(StringDateFormat(subLoan.getLastUpdateDate()));
+                scriptBuilder.append(insertSql);
 
-                String lastUpdatedBy = subLoan.getLastUpdatedBy() == null ? "null" : subLoan.getLastUpdatedBy().replace("'", "''");
-                scriptBuilder.append(lastUpdatedBy);
+                LinkedHashMap<Integer, String> transposedMapEntryValue = transposedMapEntry.getValue();
+                int transposedMapSize = transposedMapEntryValue.size();
+                int j = 0;
+                for (Map.Entry<Integer, String> entry : transposedMapEntryValue.entrySet()) {
+                    String value = entry.getValue();
+                    j++;
+                    if (j < transposedMapSize) {
+                        scriptBuilder.append(value);
+                    } else {
+                        scriptBuilder.append(value.substring(0, value.length() - 1));
+                    }
+                }
                 scriptBuilder.append(");");
                 scriptBuilder.append("\n");
                 String script = scriptBuilder.toString();
-                subLoanScriptList.add(script);
+
+                scriptList.add(script);
             }
+
+
+
             StringBuilder sb = new StringBuilder();
-            for (String script : subLoanScriptList) {
+            for (String script : scriptList) {
                 sb.append(script).append("\n");
             }
 
@@ -762,7 +513,7 @@ public class SfcSubLoanService {
             if (sub.contains("'")) {
                 sub = sub.replace("'", "''");
             }
-            return "'" + sub + "', ";
+            return "'" + sub + "',";
         }
     }
 
@@ -774,7 +525,7 @@ public class SfcSubLoanService {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             String formattedDate = dateFormat.format(sub);
 
-            return ("to_date('" + formattedDate + "', 'YYYY-MM-DD'), ");
+            return ("to_date('" + formattedDate + "', 'YYYY-MM-DD'),");
         }
     }
 
@@ -783,7 +534,7 @@ public class SfcSubLoanService {
         if (sub == null) {
             return "null,";
         } else {
-            return sub.toString() + ", ";
+            return sub.toString() + ",";
         }
 
     }

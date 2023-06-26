@@ -139,7 +139,7 @@ public class SectionAndPreviewService {
             Worksheet newSheet = worksheets.get(index);
             // 设置新工作表的名称
             newSheet.setName("template_version");
-            newSheet.setVisible(false);
+           // newSheet.setVisible(false);
 
             String fileName = "CybersecuritySection9-" + System.currentTimeMillis();
 
