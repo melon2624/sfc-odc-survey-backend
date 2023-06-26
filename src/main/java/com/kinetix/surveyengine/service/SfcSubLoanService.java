@@ -10,6 +10,7 @@ import com.kinetix.surveyengine.restful.RetResponse;
 import com.kinetix.surveyengine.restful.RetResult;
 import com.kinetix.surveyengine.util.DateUtils;
 import com.kinetix.surveyengine.util.StringUtil;
+import com.sun.scenario.effect.impl.state.LinearConvolveKernel;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,343 +45,62 @@ public class SfcSubLoanService {
     }
 
 
-    public RetResult<JSONObject> validation(MultipartFile file,HttpServletResponse response) throws IOException {
+    public RetResult<JSONObject> validation(MultipartFile file, HttpServletResponse response) throws Exception {
         LinkedHashMap<Integer, LinkedHashMap<String, String>> subLoanMap = new LinkedHashMap<>();
         LinkedHashMap<Integer, LinkedHashMap<String, String>> subLoanErrorMap = new LinkedHashMap<>();
-        Boolean isHaveError = false;
-
+        Workbook workbook = new Workbook(file.getInputStream());
+        Worksheet worksheet = workbook.getWorksheets().get("Data Migration");
+        Worksheet worksheetForm = workbook.getWorksheets().get("Form");
+        if (worksheet == null || worksheetForm == null) {
+            System.out.println("error");
+            throw new MyRuntimeException(500, "worksheet error");
+        }
+        Cells cellCollection = worksheet.getCells();
+        Cells cellCollectionFrom = worksheetForm.getCells();
+        int row = cellCollection.getMaxDataRow();
+        int formRow = cellCollectionFrom.getMaxDataRow();
+        int formColumn = cellCollectionFrom.getMaxDataColumn();
+        LinkedHashMap<Integer, LinkedHashMap<String, String>> dataMigrationMap = new LinkedHashMap<>();
+        LinkedHashMap<Integer, LinkedHashMap<String, String>> allrowMap = new LinkedHashMap<>();
+        LinkedHashMap<String, String> errorAllMap = new LinkedHashMap();
         try {
-            Workbook workbook = new Workbook(file.getInputStream());
-           // Worksheet worksheet = workbook.getWorksheets().get("Sheet1");
-          Worksheet worksheet = workbook.getWorksheets().get("Form");
-            if (worksheet == null) {
-                System.out.println("error");
-                isHaveError = true;
-                //errorMap.put("获取worksheet错误", "获取worksheet为空");
-            }
-            Cells cellCollection = worksheet.getCells();
-            int row = cellCollection.getMaxDataRow();
-            HashSet<String> caseIdSet=new HashSet<>();
-            for (int i = 3; i <= row; i++) {
-                int hang = i + 1;
-                LinkedHashMap<String, String> hangErrorMap = new LinkedHashMap();
+            HashSet<String> caseIdSet = new HashSet<>();
+
+            for (int i = 2; i <= row-4; i++) {
+
+                LinkedHashMap<String, String> rowMap = new LinkedHashMap<>();
+
                 LinkedHashMap<String, String> hangTrueMap = new LinkedHashMap();
-                Cell CASE_ID = cellCollection.get(i, 0);
-                validationCaseId(CASE_ID, hang, "A", hangErrorMap, hangTrueMap,caseIdSet);
-                Cell FORM_TYPE = cellCollection.get(i, 1);
-                validationVARCHARNotNull(FORM_TYPE, 50, hang, "B", hangErrorMap, hangTrueMap);
 
-                Cell APPL_DATE = cellCollection.get(i, 2);
-                validationDateNotNull(APPL_DATE, hang, "C", hangErrorMap, hangTrueMap);
-
-                Cell ASSO_LOAN_ID = cellCollection.get(i, 3);
-                validationVARCHAR(ASSO_LOAN_ID, 12, hang, "D", hangErrorMap, hangTrueMap);
-
-                Cell CEREF = cellCollection.get(i, 4);
-                validationVARCHARNotNull(CEREF, 6, hang, "E", hangErrorMap, hangTrueMap);
-
-                Cell FEE_RECEIVED_MASTER = cellCollection.get(i, 5);
-                validationVARCHAR(FEE_RECEIVED_MASTER, 3, hang, "F", hangErrorMap, hangTrueMap);
-
-                Cell FEE_PAYMENT_RECEIPT_DATE = cellCollection.get(i, 6);
-                validationDate(FEE_PAYMENT_RECEIPT_DATE, hang, "G", hangErrorMap, hangTrueMap);
-
-                Cell ACKNOWLEDGING_APPLICATION_RECEIPT_DATE = cellCollection.get(i, 7);
-                validationDate(ACKNOWLEDGING_APPLICATION_RECEIPT_DATE, hang, "H", hangErrorMap, hangTrueMap);
-
-                Cell ACKNOWLEDGING_FEE_PAYMENT_RECEIPT_DATE = cellCollection.get(i, 8);
-                validationDate(ACKNOWLEDGING_FEE_PAYMENT_RECEIPT_DATE, hang, "I", hangErrorMap, hangTrueMap);
-
-                Cell MEET_PERFORMANCE_PLEDGE = cellCollection.get(i, 9);
-                validationVARCHAR(MEET_PERFORMANCE_PLEDGE, 1, hang, "J", hangErrorMap, hangTrueMap);
-
-                Cell LOAN_AGREE_DATE = cellCollection.get(i, 10);
-                validationDate(LOAN_AGREE_DATE, hang, "K", hangErrorMap, hangTrueMap);
-
-                Cell CURRENCY_MASTER = cellCollection.get(i, 11);
-                validationVARCHAR(CURRENCY_MASTER, 10, hang, "L", hangErrorMap, hangTrueMap);
-
-                Cell LOAN_FACILITY_AMT = cellCollection.get(i, 12);
-                validationNUMBER(LOAN_FACILITY_AMT, hang, "M", hangErrorMap, hangTrueMap);
-
-                //N 和O 跳过
-                Cell BORROWER = cellCollection.get(i, 15);
-                validationVARCHARNotNull(BORROWER, 600, hang, "P", hangErrorMap, hangTrueMap);
-
-                Cell LENDER_NAME_1 = cellCollection.get(i, 16);
-                validationVARCHARNotNull(LENDER_NAME_1, 600, hang, "Q", hangErrorMap, hangTrueMap);
-
-                Cell LENDER_NAME_2 = cellCollection.get(i, 17);
-                validationVARCHAR(LENDER_NAME_2, 600, hang, "R", hangErrorMap, hangTrueMap);
-
-                Cell LENDER_NAME_3 = cellCollection.get(i, 18);
-                validationVARCHAR(LENDER_NAME_3, 600, hang, "S", hangErrorMap, hangTrueMap);
-
-                Cell LENDER_NAME_4 = cellCollection.get(i, 19);
-                validationVARCHAR(LENDER_NAME_4, 600, hang, "T", hangErrorMap, hangTrueMap);
-
-                Cell LENDER_NAME_5 = cellCollection.get(i, 20);
-                validationVARCHAR(LENDER_NAME_5, 600, hang, "U", hangErrorMap, hangTrueMap);
-
-                Cell LOAN_TYPE_NEWAPP_SUBMISSION = cellCollection.get(i, 21);
-                validationVARCHARNotNull(LOAN_TYPE_NEWAPP_SUBMISSION, 10, hang, "V", hangErrorMap, hangTrueMap);
-
-                Cell CURRENCY_NEWAPP_SUBMISSION = cellCollection.get(i, 22);
-                validationVARCHAR(CURRENCY_NEWAPP_SUBMISSION, 10, hang, "W", hangErrorMap, hangTrueMap);
-
-                Cell LOAN_FACILITY_AMOUNT_NEWAPP_SUBMISSION = cellCollection.get(i, 23);
-                validationNUMBER(LOAN_FACILITY_AMOUNT_NEWAPP_SUBMISSION, hang, "X", hangErrorMap, hangTrueMap);
-
-                Cell INTEREST_RATE_NEWAPP_SUBMISSION = cellCollection.get(i, 24);
-                validationVARCHAR(INTEREST_RATE_NEWAPP_SUBMISSION, 600, hang, "Y", hangErrorMap, hangTrueMap);
-
-                Cell DURATION_NEWAPP_SUBMISSION = cellCollection.get(i, 25);
-                validationVARCHAR(DURATION_NEWAPP_SUBMISSION, 600, hang, "Z", hangErrorMap, hangTrueMap);
-
-                Cell APPL_STATUS_NEWAPP = cellCollection.get(i, 26);
-                validationVARCHAR(APPL_STATUS_NEWAPP, 10, hang, "AA", hangErrorMap, hangTrueMap);
-
-                Cell INPRINCIPLE_APPL_LETTER_ISSUED_DATE_NEWAPP = cellCollection.get(i, 27);
-                validationDate(INPRINCIPLE_APPL_LETTER_ISSUED_DATE_NEWAPP, hang, "AB", hangErrorMap, hangTrueMap);
-
-                Cell FINAL_APPL_LETTER_DATE_NEWAPP = cellCollection.get(i, 28);
-                validationDate(FINAL_APPL_LETTER_DATE_NEWAPP, hang, "AC", hangErrorMap, hangTrueMap);
-
-                Cell REJECT_LETTER_DATE_NEWAPP = cellCollection.get(i, 29);
-                validationDate(REJECT_LETTER_DATE_NEWAPP, hang, "AD", hangErrorMap, hangTrueMap);
-
-                Cell RETURN_LETTER_DATE_NEWAPP = cellCollection.get(i, 30);
-                validationDate(RETURN_LETTER_DATE_NEWAPP, hang, "AE", hangErrorMap, hangTrueMap);
-
-                Cell APPL_REJECT_WITHDL_DATE_NEWAPP = cellCollection.get(i, 31);
-                validationDate(APPL_REJECT_WITHDL_DATE_NEWAPP, hang, "AF", hangErrorMap, hangTrueMap);
-
-                Cell LOAN_AGREEMENT_DATE_NEWAPP = cellCollection.get(i, 32);
-                validationDate(LOAN_AGREEMENT_DATE_NEWAPP, hang, "AG", hangErrorMap, hangTrueMap);
-
-                Cell LOAN_EXPIRY_DATE_NEWAPP = cellCollection.get(i, 33);
-                validationDate(LOAN_EXPIRY_DATE_NEWAPP, hang, "AH", hangErrorMap, hangTrueMap);
-
-                Cell APPROVED_CURRENCY_NEWAPP = cellCollection.get(i, 34);
-                validationVARCHAR(APPROVED_CURRENCY_NEWAPP, 10, hang, "AI", hangErrorMap, hangTrueMap);
-
-                Cell APPROVED_LOAN_AMOUNT_FACILITY_NEWAPP = cellCollection.get(i, 35);
-                validationVARCHAR(APPROVED_LOAN_AMOUNT_FACILITY_NEWAPP, 10, hang, "AJ", hangErrorMap, hangTrueMap);
-
-                Cell APPROVED_INTEREST_RATE_NEWAPP = cellCollection.get(i, 36);
-                validationVARCHAR(APPROVED_INTEREST_RATE_NEWAPP, 600, hang, "AK", hangErrorMap, hangTrueMap);
-
-                Cell APPROVED_DURATION_NEWAPP = cellCollection.get(i, 37);
-                validationVARCHAR(APPROVED_DURATION_NEWAPP, 20, hang, "AL", hangErrorMap, hangTrueMap);
-
-                Cell DATE_OF_DRAWDOWN_SUBMISSION_CELL = cellCollection.get(i, 39);
-                validationDate(DATE_OF_DRAWDOWN_SUBMISSION_CELL, hang, "AN", hangErrorMap, hangTrueMap);
-
-                Cell CURRENCY_DRAWDOWN_SUBMISSION = cellCollection.get(i, 40);
-                validationVARCHAR(CURRENCY_DRAWDOWN_SUBMISSION, 10, hang, "AO", hangErrorMap, hangTrueMap);
-
-                Cell DRAWDOWN_AMT_SUBMISSION = cellCollection.get(i, 41);
-                validationVARCHAR(DRAWDOWN_AMT_SUBMISSION, 100, hang, "AP", hangErrorMap, hangTrueMap);
-
-                Cell APPL_STATUS_DRAWDOWN = cellCollection.get(i, 42);
-                validationVARCHAR(APPL_STATUS_DRAWDOWN, 10, hang, "AQ", hangErrorMap, hangTrueMap);
-
-                Cell CONFIRM_LETTER_ISSUE_DATE_DRAWDOWN = cellCollection.get(i, 43);
-                validationDate(CONFIRM_LETTER_ISSUE_DATE_DRAWDOWN, hang, "AR", hangErrorMap, hangTrueMap);
-
-                Cell REJECT_LETTER_DATE_DRAWDOWN = cellCollection.get(i, 44);
-                validationDate(REJECT_LETTER_DATE_DRAWDOWN, hang, "AS", hangErrorMap, hangTrueMap);
-
-
-                Cell RETURN_LETTER_DATE_DRAWDOWN = cellCollection.get(i, 45);
-                validationDate(RETURN_LETTER_DATE_DRAWDOWN, hang, "AT", hangErrorMap, hangTrueMap);
-
-                Cell APPL_REJECT_WITHDL_DATE_DRAWDOWN = cellCollection.get(i, 46);
-                validationDate(APPL_REJECT_WITHDL_DATE_DRAWDOWN, hang, "AU", hangErrorMap, hangTrueMap);
-
-                Cell APPROVED_DATE_OF_DRAWDOWN = cellCollection.get(i, 47);
-                validationDate(APPROVED_DATE_OF_DRAWDOWN, hang, "AV", hangErrorMap, hangTrueMap);
-
-                Cell CURRENCY_APPROVED_DRAWDOWN = cellCollection.get(i, 48);
-                validationVARCHAR(CURRENCY_APPROVED_DRAWDOWN, 10, hang, "AW", hangErrorMap, hangTrueMap);
-
-                Cell APPROVED_DRAWDOWN_AMT = cellCollection.get(i, 49);
-                validationNUMBER(APPROVED_DRAWDOWN_AMT, hang, "AX", hangErrorMap, hangTrueMap);
-
-                Cell EXPIRY_DATE_OF_THE_LOAN_RENEWAL_SUBMISSION = cellCollection.get(i, 51);
-                validationDate(EXPIRY_DATE_OF_THE_LOAN_RENEWAL_SUBMISSION, hang, "AZ", hangErrorMap, hangTrueMap);
-
-                Cell APPL_STATUS_RENEWAL = cellCollection.get(i, 52);
-                validationVARCHAR(APPL_STATUS_RENEWAL, 10, hang, "BA", hangErrorMap, hangTrueMap);
-
-                Cell APPL_LETTER_ISSUE_DATE_RENEWAL = cellCollection.get(i, 53);
-                validationDate(APPL_LETTER_ISSUE_DATE_RENEWAL, hang, "BB", hangErrorMap, hangTrueMap);
-
-                Cell FINAL_APPL_LETTER_DATE_RENEWAL = cellCollection.get(i, 54);
-                validationDate(FINAL_APPL_LETTER_DATE_RENEWAL, hang, "BC", hangErrorMap, hangTrueMap);
-
-                Cell REJECT_LETTER_DATE_RENEWA = cellCollection.get(i, 55);
-                validationDate(REJECT_LETTER_DATE_RENEWA, hang, "BD", hangErrorMap, hangTrueMap);
-
-                Cell RETURN_LETTER_DATE_RENEWAL = cellCollection.get(i, 56);
-                validationDate(RETURN_LETTER_DATE_RENEWAL, hang, "BE", hangErrorMap, hangTrueMap);
-
-                Cell LOAN_EXPIRY_DATE_APPROVRD_RENEWAL = cellCollection.get(i, 57);
-                validationDate(LOAN_EXPIRY_DATE_APPROVRD_RENEWAL, hang, "BF", hangErrorMap, hangTrueMap);
-
-                Cell PROPOSE_VARIATION_VAR_SUBMISSION = cellCollection.get(i, 59);
-                validationVARCHAR(PROPOSE_VARIATION_VAR_SUBMISSION, 2000, hang, "BH", hangErrorMap, hangTrueMap);
-
-
-                Cell APPL_STATUS_VAR = cellCollection.get(i, 60);
-                validationVARCHAR(APPL_STATUS_VAR, 10, hang, "BI", hangErrorMap, hangTrueMap);
-
-                Cell APPL_LETTER_ISSUED_DATE_VAR = cellCollection.get(i, 61);
-                validationDate(APPL_LETTER_ISSUED_DATE_VAR, hang, "BJ", hangErrorMap, hangTrueMap);
-
-                Cell REJECT_LETTER_ISSUED_DATE_VAR = cellCollection.get(i, 62);
-                validationDate(REJECT_LETTER_ISSUED_DATE_VAR, hang, "BK", hangErrorMap, hangTrueMap);
-
-                Cell RETURN_LETTER_DATE_VAR = cellCollection.get(i, 63);
-                validationDate(RETURN_LETTER_DATE_VAR, hang, "BL", hangErrorMap, hangTrueMap);
-
-                Cell APPL_REJECT_WITHDL_DATE_VAR = cellCollection.get(i, 64);
-                validationDate(APPL_REJECT_WITHDL_DATE_VAR, hang, "BM", hangErrorMap, hangTrueMap);
-
-                Cell APPL_VARIATION_LOAN_AGREEMENT = cellCollection.get(i, 65);
-                validationVARCHAR(APPL_VARIATION_LOAN_AGREEMENT, 100, hang, "BN", hangErrorMap, hangTrueMap);
-
-                Cell DATE_OF_REPAYMENT_SUBMISSION = cellCollection.get(i, 67);
-                validationDate(DATE_OF_REPAYMENT_SUBMISSION, hang, "BP", hangErrorMap, hangTrueMap);
-
-                Cell CURRENCY_REPAYMENT_SUBMISSION = cellCollection.get(i, 68);
-                validationVARCHAR(CURRENCY_REPAYMENT_SUBMISSION, 10, hang, "BQ", hangErrorMap, hangTrueMap);
-
-                Cell REPAYMENT_AMT_SUBMISSION = cellCollection.get(i, 69);
-                validationNUMBER(REPAYMENT_AMT_SUBMISSION, hang, "BR", hangErrorMap, hangTrueMap);
-
-                Cell APPL_STATUS_REPAYMENT = cellCollection.get(i, 70);
-                validationVARCHAR(APPL_STATUS_REPAYMENT, 10, hang, "BS", hangErrorMap, hangTrueMap);
-
-                Cell PRIOR_CONSENT_LETTER_ISSUED_DATE_REPAYMENT = cellCollection.get(i, 71);
-                validationDate(PRIOR_CONSENT_LETTER_ISSUED_DATE_REPAYMENT, hang, "BT", hangErrorMap, hangTrueMap);
-
-                Cell APPL_LETTER_ISSUED_DATE_REPAYMENT = cellCollection.get(i, 72);
-                validationDate(APPL_LETTER_ISSUED_DATE_REPAYMENT, hang, "BU", hangErrorMap, hangTrueMap);
-
-                Cell REJECT_LETTER_ISSUED_DATE_REPAYMENT = cellCollection.get(i, 73);
-                validationDate(REJECT_LETTER_ISSUED_DATE_REPAYMENT, hang, "BV", hangErrorMap, hangTrueMap);
-
-                Cell RETURN_LETTER_DATE_REPAYMENT = cellCollection.get(i, 74);
-                validationDate(RETURN_LETTER_DATE_REPAYMENT, hang, "BW", hangErrorMap, hangTrueMap);
-
-
-                Cell APPL_REJECT_WITHDL_DATE_REPAYMENT = cellCollection.get(i, 75);
-                validationDate(APPL_REJECT_WITHDL_DATE_REPAYMENT, hang, "BX", hangErrorMap, hangTrueMap);
-
-                Cell APPROVED_DATE_OF_REPAYMENT = cellCollection.get(i, 76);
-                validationDate(APPROVED_DATE_OF_REPAYMENT, hang, "BY", hangErrorMap, hangTrueMap);
-
-                Cell APPROVED_CURRENCY_REPAYMENT = cellCollection.get(i, 77);
-                validationVARCHAR(APPROVED_CURRENCY_REPAYMENT, 10, hang, "BZ", hangErrorMap, hangTrueMap);
-
-                Cell APPROVED_REPAYMENT_AMT = cellCollection.get(i, 78);
-                validationNUMBER(APPROVED_REPAYMENT_AMT, hang, "CA", hangErrorMap, hangTrueMap);
-
-                Cell PROPOSE_AMENDMENT_CONDITION_SUBMISSION = cellCollection.get(i, 80);
-                validationVARCHAR(PROPOSE_AMENDMENT_CONDITION_SUBMISSION, 50, hang, "CC", hangErrorMap, hangTrueMap);
-
-                Cell APPL_STATUS_AMENDMENT_CONDITION = cellCollection.get(i, 81);
-                validationVARCHAR(APPL_STATUS_AMENDMENT_CONDITION, 10, hang, "CD", hangErrorMap, hangTrueMap);
-
-                Cell INPRINCIPLE_APPL_LETTER_ISSUED_DATE_AMENDMENT_CONDITION = cellCollection.get(i, 82);
-                validationDate(INPRINCIPLE_APPL_LETTER_ISSUED_DATE_AMENDMENT_CONDITION, hang, "CE", hangErrorMap, hangTrueMap);
-
-                Cell APPL_LETTER_ISSUED_DATE_AMENDMENT_CONDITION = cellCollection.get(i, 83);
-                validationDate(APPL_LETTER_ISSUED_DATE_AMENDMENT_CONDITION, hang, "CF", hangErrorMap, hangTrueMap);
-
-                Cell REJECT_LETTER_ISSUED_DATE_AMENDMENT_CONDITION = cellCollection.get(i, 84);
-                validationDate(REJECT_LETTER_ISSUED_DATE_AMENDMENT_CONDITION, hang, "CG", hangErrorMap, hangTrueMap);
-
-                Cell RETURN_LETTER_DATE_AMENDMENT_CONDITION = cellCollection.get(i, 85);
-                validationDate(RETURN_LETTER_DATE_AMENDMENT_CONDITION, hang, "CH", hangErrorMap, hangTrueMap);
-
-                Cell APPL_REJECT_WITHDL_DATE_AMENDMENT_CONDITION = cellCollection.get(i, 86);
-                validationDate(APPL_REJECT_WITHDL_DATE_AMENDMENT_CONDITION, hang, "CI", hangErrorMap, hangTrueMap);
-
-                Cell APPROVED_AMENDMENT_CONDITION = cellCollection.get(i, 87);
-                validationVARCHAR(APPROVED_AMENDMENT_CONDITION, 50, hang, "CJ", hangErrorMap, hangTrueMap);
-
-                Cell DATE_OF_TERM_SUBMISSION = cellCollection.get(i, 89);
-                validationDate(DATE_OF_TERM_SUBMISSION, hang, "CL", hangErrorMap, hangTrueMap);
-
-                Cell APPL_STATUS_TERM = cellCollection.get(i, 90);
-                validationVARCHAR(APPL_STATUS_TERM, 10, hang, "CM", hangErrorMap, hangTrueMap);
-
-                Cell APPL_LETTER_ISSUE_DATE_TERM = cellCollection.get(i, 91);
-                validationDate(APPL_LETTER_ISSUE_DATE_TERM, hang, "CN", hangErrorMap, hangTrueMap);
-
-                Cell FINAL_APPL_LETTER_DATE_TERM = cellCollection.get(i, 92);
-                validationDate(FINAL_APPL_LETTER_DATE_TERM, hang, "CO", hangErrorMap, hangTrueMap);
-
-
-                Cell REJECT_LETTER_DATE_TERM = cellCollection.get(i, 93);
-                validationDate(REJECT_LETTER_DATE_TERM, hang, "CP", hangErrorMap, hangTrueMap);
-
-                Cell RETURN_LETTER_DATE_TERM = cellCollection.get(i, 94);
-                validationDate(RETURN_LETTER_DATE_TERM, hang, "CQ", hangErrorMap, hangTrueMap);
-
-                Cell LOAN_EXPIRY_DATE_APPROVRD_TERM = cellCollection.get(i, 95);
-                validationDate(LOAN_EXPIRY_DATE_APPROVRD_TERM, hang, "CR", hangErrorMap, hangTrueMap);
-
-                Cell APPROVED_DATE_OF_TERM = cellCollection.get(i, 96);
-                validationDate(APPROVED_DATE_OF_TERM, hang, "CS", hangErrorMap, hangTrueMap);
-
-                Cell LAST_APPL_EXT_RENEW_DATE_MOVEMENT = cellCollection.get(i, 98);
-                validationDate(LAST_APPL_EXT_RENEW_DATE_MOVEMENT, hang, "CU", hangErrorMap, hangTrueMap);
-
-                Cell LOAN_EXPIRY_DATE_MOVEMENT = cellCollection.get(i, 99);
-                validationDate(LOAN_EXPIRY_DATE_MOVEMENT, hang, "CV", hangErrorMap, hangTrueMap);
-
-                Cell EXPIRED_LOAN_MOVEMENT = cellCollection.get(i, 100);
-                validationVARCHAR(EXPIRED_LOAN_MOVEMENT, 1, hang, "CW", hangErrorMap, hangTrueMap);
-
-                Cell TERM_DATE_BORROWER_LOAN_MOVEMENT = cellCollection.get(i, 101);
-                validationDate(TERM_DATE_BORROWER_LOAN_MOVEMENT, hang, "CX", hangErrorMap, hangTrueMap);
-
-                Cell TERM_DATE_SFC_LOAN_MOVEMENT = cellCollection.get(i, 102);
-                validationDate(TERM_DATE_SFC_LOAN_MOVEMENT, hang, "CY", hangErrorMap, hangTrueMap);
-
-                Cell VARIATION_OF_TERMS_APPROVAL_LOAN_MOVEMENT = cellCollection.get(i, 103);
-                validationVARCHAR(VARIATION_OF_TERMS_APPROVAL_LOAN_MOVEMENT, 1, hang, "CZ", hangErrorMap, hangTrueMap);
-
-                Cell IMPOSITION_AMENDMENT_REVOCATION_CONDITION_APPRL_SFC_MOVEMENT = cellCollection.get(i, 104);
-                validationVARCHAR(IMPOSITION_AMENDMENT_REVOCATION_CONDITION_APPRL_SFC_MOVEMENT, 1, hang, "DA", hangErrorMap, hangTrueMap);
-
-                Cell CURRENCY_LOAN_MOVEMENT = cellCollection.get(i, 105);
-                validationVARCHAR(CURRENCY_LOAN_MOVEMENT, 3, hang, "DB", hangErrorMap, hangTrueMap);
-
-                Cell FACILITY_LIMIT_LOAN_MOVEMENT = cellCollection.get(i, 106);
-                validationNUMBER(FACILITY_LIMIT_LOAN_MOVEMENT, hang, "DC", hangErrorMap, hangTrueMap);
-
-                Cell LOAN_AMT_MOVEMENT = cellCollection.get(i, 107);
-                validationNUMBER(LOAN_AMT_MOVEMENT, hang, "DD", hangErrorMap, hangTrueMap);
-
-                Cell OUTSTANDING_LOAN_AMT_MOVEMENT = cellCollection.get(i, 108);
-                validationNUMBER(OUTSTANDING_LOAN_AMT_MOVEMENT, hang, "DE", hangErrorMap, hangTrueMap);
-
-                if (!hangTrueMap.isEmpty()) {
-                    subLoanMap.put(hang, hangTrueMap);
-                }
-                if (!hangErrorMap.isEmpty()) {
-                    subLoanErrorMap.put(hang, hangErrorMap);
-                }
+                //rowMap.put("filed", cellCollection.get(i, 0).getStringValue());
+                rowMap.put("tableName", cellCollection.get(i, 1).getStringValue());
+                rowMap.put("columnName", cellCollection.get(i, 2).getStringValue());
+                rowMap.put("dataType", cellCollection.get(i, 3).getStringValue());
+                rowMap.put("length/Format", cellCollection.get(i, 4).getStringValue());
+                rowMap.put("mandatory", cellCollection.get(i, 5).getStringValue());
+                rowMap.put("Mapping", cellCollection.get(i, 7).getStringValue());
+                dataMigrationMap.put(i, rowMap);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        JSONObject jsonObject = null;
+        for (Map.Entry<Integer, LinkedHashMap<String, String>> entry : dataMigrationMap.entrySet()) {
+            Integer key = entry.getKey();
+            LinkedHashMap<String, String> value = entry.getValue();
+            String mapping = value.get("Mapping");
+            if (mapping.equals("AB")){
+                System.out.printf("----");
+            }
+            Integer column = StringUtil.columnToIndex(mapping);
+            for (int j = 3; j <= formRow; j++) {
+                Cell cell = cellCollectionFrom.get(j, column);
+                LinkedHashMap<String, String> rowMap = new LinkedHashMap<>();
+                checkCell(cell, value, errorAllMap, rowMap);
+                allrowMap.put(j, rowMap);
+            }
+        }
+   /*     JSONObject jsonObject = null;
         if (!subLoanErrorMap.isEmpty()) {
             jsonObject = JSONObject.parseObject(JSON.toJSONString(subLoanErrorMap));
 
@@ -390,7 +110,126 @@ public class SfcSubLoanService {
         } else {
             saveSubLoanMap(subLoanMap, response);
             return RetResponse.say(200, "success", jsonObject);
+        }*/
+        return null;
+    }
+
+    private void checkCell(Cell cell, LinkedHashMap<String, String> valueMap, LinkedHashMap<String, String> errorMap, LinkedHashMap<String, String> rowMap) {
+
+        String dataType = valueMap.get("dataType");
+
+        if (dataType.equals("VARCHAR2")) {
+            checkVarcharCell(cell, valueMap, errorMap, rowMap);
+        } else if (dataType.equals("DATE")) {
+            checkDateCell(cell, valueMap, errorMap, rowMap);
+        } else if (dataType.equals("NUMBER")) {
+            checkNumber(cell, valueMap, errorMap, rowMap);
         }
+    }
+
+    private void checkNumber(Cell cell, LinkedHashMap<String, String> valueMap, LinkedHashMap<String, String> errorMap, LinkedHashMap<String, String> rowMap) {
+
+        int row = cell.getRow() + 1;
+        String column = valueMap.get("Mapping");
+        String mandatory = valueMap.get("mandatory");
+        String errorMessage = "";
+        String numberCell = (cell == null || cell.getValue() == null) ? null : cell.getValue().toString();
+
+        if (mandatory.equals("Y") && StringUtils.isEmpty(numberCell)) {
+            errorMessage = "The " + row + "row and the " + column + " column are empty";
+            logger.error(errorMessage);
+            errorMap.put(column, errorMessage);
+        } else {
+            if (numberCell != null) {
+                //获取单元格类型
+                int type = cell.getType();
+                if (CellValueType.IS_NUMERIC != type) {
+                    errorMessage = "Type error at line " + row + "column " + column + " numeric type required";
+                    logger.error(errorMessage);
+                    errorMap.put(column, errorMessage);
+                } else {
+                    BigDecimal numberValue = new BigDecimal(cell.getValue().toString());
+                    rowMap.put(column, numberValue.toPlainString());
+                }
+            }
+        }
+        if (StringUtils.isEmpty(errorMessage) && rowMap.get(column) == null) {
+            rowMap.put(column, null);
+        }
+        return;
+
+    }
+
+    private void checkDateCell(Cell cell, LinkedHashMap<String, String> valueMap, LinkedHashMap<String, String> errorMap, LinkedHashMap<String, String> rowMap) {
+
+        int row = cell.getRow() + 1;
+        String column = valueMap.get("Mapping");
+        String mandatory = valueMap.get("mandatory");
+        String errorMessage = "";
+        String dateCell = (cell == null || cell.getValue() == null || cell.getValue().toString().trim().equals("")) ? null : cell.getValue().toString();
+        if (StringUtils.isEmpty(dateCell) && mandatory.equals("Y")) {
+            errorMessage = "The " + row + "row and the " + column + " column are empty";
+            logger.error(errorMessage);
+            errorMap.put(column, errorMessage);
+        } else {
+            if (dateCell != null) {
+                if (dateCell.contains(" ")) {
+                    errorMessage = "There is a space in line " + row + ",column " + column;
+                    logger.error(errorMessage);
+                    errorMap.put(column, errorMessage);
+                } else if (!StringUtil.checkDateFormat(dateCell)) {
+                    errorMessage = "The time format of the " + row + " row and the  " + column + "  column is wrong";
+                    logger.error(errorMessage);
+                    errorMap.put(column, errorMessage);
+                }
+            }
+        }
+        if (StringUtils.isEmpty(errorMessage)) {
+            rowMap.put(column, dateCell);
+        }
+        return;
+    }
+
+    private void checkVarcharCell(Cell cell, LinkedHashMap<String, String> valueMap, LinkedHashMap<String, String> errorMap, LinkedHashMap<String, String> rowMap) {
+
+        int row = cell.getRow() + 1;
+        String column = valueMap.get("Mapping");
+        String mandatory = valueMap.get("mandatory");
+        String errorMessage = "";
+
+        String length = valueMap.get("length/Format").trim();
+        if (mandatory.equals("Y")) {
+            if (cell == null || cell.getValue() == null || "".equals(StringUtils.isEmpty(cell.getValue().toString()))) {
+                errorMessage = "The " + row + "row and the " + column + " column can not be empty";
+                logger.error(errorMessage);
+                errorMap.put(column, errorMessage);
+            } else {
+                if (cell.getValue().toString().length() > Integer.parseInt(length)) {
+                    errorMessage = "The length of the " + row + " row and the " + column + " column is greater than" + length;
+                    logger.error(errorMessage);
+                    errorMap.put(column, errorMessage);
+                } else {
+                    //  System.out.println(cell.getValue().toString() + " , ");
+                    rowMap.put(column, cell.getValue().toString());
+                }
+            }
+        } else {
+
+            if (cell != null && cell.getValue() != null) {
+
+                if (cell.getValue().toString().length() > Integer.parseInt(length)) {
+                    errorMessage = "The length of the " + row + " row and the " + column + " column is greater than " + length;
+                    logger.error(errorMessage);
+                    errorMap.put(column, errorMessage);
+                } else {
+                    errorMap.put(column, cell.getValue().toString());
+                }
+            }
+        }
+        if (StringUtils.isEmpty(errorMessage) && rowMap.get(column) == null) {
+            rowMap.put(column, null);
+        }
+        return;
 
     }
 
@@ -510,8 +349,8 @@ public class SfcSubLoanService {
 
             for (SubLoan subLoan : subLoanList) {
                 boolean add = subCaseIdSet.add(subLoan.getCaseId());
-                if (!add){
-                    throw new  MyRuntimeException(500,"caseId duplicate");
+                if (!add) {
+                    throw new MyRuntimeException(500, "caseId duplicate");
                 }
             }
 
@@ -754,7 +593,7 @@ public class SfcSubLoanService {
         }
     }
 
-    private void validationCaseId(Cell CASE_ID_CELL, int row, String column, LinkedHashMap hangErrorMap, LinkedHashMap hangTrueMap,HashSet<String> caseIdSet) {
+    private void validationCaseId(Cell CASE_ID_CELL, int row, String column, LinkedHashMap hangErrorMap, LinkedHashMap hangTrueMap, HashSet<String> caseIdSet) {
 
         String CASE_ID = CASE_ID_CELL.getValue() == null ? null : CASE_ID_CELL.getValue().toString();
         String errorMessage = "";
@@ -865,7 +704,7 @@ public class SfcSubLoanService {
     private void validationVARCHARNotNull(Cell cell, int length, int row, String column, LinkedHashMap hangErrorMap, LinkedHashMap hangTrueMap) {
         String errorMessage = "";
 
-        if (cell == null || cell.getValue()==null||"".equals(StringUtils.isEmpty(cell.getValue().toString()))) {
+        if (cell == null || cell.getValue() == null || "".equals(StringUtils.isEmpty(cell.getValue().toString()))) {
             errorMessage = "The " + row + "row and the " + column + " column are empty";
             logger.error(errorMessage);
             hangErrorMap.put(column, errorMessage);

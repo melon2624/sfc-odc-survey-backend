@@ -30,7 +30,12 @@ public class SFCSubLoanController {
 
     @RequestMapping("/validation")
     public RetResult<JSONObject> validation(@RequestParam("fileName") MultipartFile file, HttpServletResponse response) throws IOException {
-        RetResult<JSONObject> validationResult = sfcSubLoanService.validation(file,response);
+        RetResult<JSONObject> validationResult = null;
+        try {
+            validationResult = sfcSubLoanService.validation(file,response);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return validationResult;
     }
 

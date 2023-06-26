@@ -27,6 +27,18 @@ public class StringUtil {
 
     }
 
+    public static int columnToIndex(String column) {
+        int columnIndex = 0;
+        int length = column.length();
+        for (int i = 0; i < length; i++) {
+            char c = column.charAt(i);
+            columnIndex = (columnIndex * 26) + (c - 'A'+1 );
+        }
+        return columnIndex-1;
+    }
+
+
+
     public static void main(String[] args) {
 
         final boolean b = checkDateFormat("2011/22/1");
