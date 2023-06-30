@@ -59,20 +59,20 @@ public class SfcSubLoanService {
         Cells cellCollectionFrom = worksheetForm.getCells();
         int row = cellCollection.getMaxDataRow();
         int formRow = cellCollectionFrom.getMaxDataRow();
-        int formColumn = cellCollectionFrom.getMaxDataColumn();
         LinkedHashMap<Integer, LinkedHashMap<String, String>> dataMigrationMap = new LinkedHashMap<>();
         LinkedHashMap<Integer, LinkedHashMap<Integer, String>> allcolumnMap = new LinkedHashMap<>();
         LinkedHashMap<String, String> errorAllMap = new LinkedHashMap();
+        HashSet<String> tableNameSet = new HashSet<>();
         try {
-            HashSet<String> caseIdSet = new HashSet<>();
-
             for (int i = 2; i <= row - 4; i++) {
-
+                int actualRow = i + 1;
                 LinkedHashMap<String, String> rowMap = new LinkedHashMap<>();
-
-                LinkedHashMap<String, String> hangTrueMap = new LinkedHashMap();
-
-                //rowMap.put("filed", cellCollection.get(i, 0).getStringValue());
+                tableNameSet.add(cellCollection.get(i, 1).getStringValue().trim());
+                if (tableNameSet.size() >= 2) {
+                    String errorMessage = "The " + actualRow + " row and the B column (Data Migration Tab) is  inconsistent";
+                    errorAllMap.put("B", errorMessage);
+                    break;
+                }
                 rowMap.put("tableName", cellCollection.get(i, 1).getStringValue());
                 rowMap.put("columnName", cellCollection.get(i, 2).getStringValue());
                 rowMap.put("dataType", cellCollection.get(i, 3).getStringValue());
@@ -85,23 +85,32 @@ public class SfcSubLoanService {
             e.printStackTrace();
         }
 
-        for (Map.Entry<Integer, LinkedHashMap<String, String>> entry : dataMigrationMap.entrySet()) {
-            Integer key = entry.getKey();
-            LinkedHashMap<String, String> value = entry.getValue();
-            String mapping = value.get("Mapping");
-            LinkedHashMap<Integer, String> columnMap = new LinkedHashMap<>();
-            Integer column = StringUtil.columnToIndex(mapping);
-            System.out.println(key + "----------------");
-            for (int j = 3; j <= formRow; j++) {
-                Cell cell = cellCollectionFrom.get(j, column);
-                checkCell(cell, value, errorAllMap, columnMap);
-                //allcolumnMap.put(j, columnMap);
+        if (errorAllMap.isEmpty()) {
+            for (Map.Entry<Integer, LinkedHashMap<String, String>> entry : dataMigrationMap.entrySet()) {
+                Integer key = entry.getKey();
+                String mappingValue = entry.getValue().get("columnName");
+                LinkedHashMap<String, String> value = entry.getValue();
+                String mapping = value.get("Mapping");
+                LinkedHashMap<Integer, String> columnMap = new LinkedHashMap<>();
+                Integer column = StringUtil.columnToIndex(mapping);
+                for (int j = 1; j <= formRow; j++) {
+                    Cell cell = cellCollectionFrom.get(j, column);
+                    checkCell(cell, value, errorAllMap, columnMap);
+                }
+
+                if (mappingValue.equals("CASE_ID")) {
+                    checkDuplicate(errorAllMap, columnMap, mapping);
+                }
+                allcolumnMap.put(key, columnMap);
             }
-            allcolumnMap.put(key, columnMap);
         }
+
         JSONObject jsonObject = null;
         if (!errorAllMap.isEmpty()) {
             StringBuilder sb = new StringBuilder();
+            sb.append("Run fail !!!" + "\n\n");
+            sb.append("Total number of error records : " + errorAllMap.size() + "\n\n");
+
             for (String script : errorAllMap.values()) {
                 sb.append(script).append("\n");
             }
@@ -122,7 +131,22 @@ public class SfcSubLoanService {
             saveSubLoanMap(allcolumnMap, dataMigrationMap, response);
             return RetResponse.say(200, "success", jsonObject);
         }
-        // return null;
+    }
+
+    private void checkDuplicate(LinkedHashMap<String, String> errorAllMap, LinkedHashMap<Integer, String> columnMap, String mapping) {
+
+        HashSet<String> hashSet = new HashSet<>();
+
+        for (Map.Entry<Integer, String> entry : columnMap.entrySet()) {
+            if (hashSet.contains(entry.getValue().trim())) {
+                int actualRow = entry.getKey() + 1;
+                String errorMessage = "Duplicated CASE_ID : \"" + entry.getValue() + "\" in Row " + actualRow + " Column " + mapping;
+                errorAllMap.put(mapping, errorMessage);
+            } else {
+                hashSet.add(entry.getValue().trim());
+            }
+        }
+
     }
 
     private void checkCell(Cell cell, LinkedHashMap<String, String> valueMap, LinkedHashMap<String, String> errorMap, LinkedHashMap<Integer, String> columnMap) {
@@ -147,9 +171,9 @@ public class SfcSubLoanService {
         String numberCell = (cell == null || cell.getValue() == null) ? null : cell.getValue().toString();
 
         if (mandatory.equals("Y") && StringUtils.isEmpty(numberCell)) {
-            errorMessage = "The " + row + "row and the " + column + " column are empty";
+            errorMessage = "Missing mandatory data in Row " + row + " Column " + column;
             logger.error(errorMessage);
-            errorMap.put(column, errorMessage);
+            errorMap.put(row + "--" + column, errorMessage);
         } else {
             if (numberCell != null) {
                 //获取单元格类型
@@ -157,7 +181,7 @@ public class SfcSubLoanService {
                 if (CellValueType.IS_NUMERIC != type) {
                     errorMessage = "Type error at line " + row + "column " + column + " numeric type required";
                     logger.error(errorMessage);
-                    errorMap.put(column, errorMessage);
+                    errorMap.put(row + "--" + column, errorMessage);
                 } else {
                     BigDecimal numberValue = new BigDecimal(cell.getValue().toString());
                     columnMap.put(cell.getRow(), numberValue.toPlainString());
@@ -179,19 +203,19 @@ public class SfcSubLoanService {
         String errorMessage = "";
         String dateCell = (cell == null || cell.getValue() == null || cell.getValue().toString().trim().equals("")) ? null : cell.getValue().toString();
         if (StringUtils.isEmpty(dateCell) && mandatory.equals("Y")) {
-            errorMessage = "The " + row + "row and the " + column + " column are empty";
+            errorMessage = "Missing mandatory data in Row " + row + " Column " + column;
             logger.error(errorMessage);
-            errorMap.put(column, errorMessage);
+            errorMap.put(row + "--" + column, errorMessage);
         } else {
             if (dateCell != null) {
                 if (dateCell.contains(" ")) {
                     errorMessage = "There is a space in line " + row + ",column " + column;
                     logger.error(errorMessage);
-                    errorMap.put(column, errorMessage);
+                    errorMap.put(row + "--" + column, errorMessage);
                 } else if (!StringUtil.checkDateFormat(dateCell)) {
-                    errorMessage = "The time format of the " + row + " row and the  " + column + "  column is wrong";
+                    errorMessage = "Wrong date format : \"" + dateCell + "\" in Row " + row + " Column " + column;
                     logger.error(errorMessage);
-                    errorMap.put(column, errorMessage);
+                    errorMap.put(row + "--" + column, errorMessage);
                 }
             }
         }
@@ -207,31 +231,27 @@ public class SfcSubLoanService {
         String column = valueMap.get("Mapping");
         String mandatory = valueMap.get("mandatory");
         String errorMessage = "";
-
         String length = valueMap.get("length/Format").trim();
         if (mandatory.equals("Y")) {
             if (cell == null || cell.getValue() == null || "".equals(StringUtils.isEmpty(cell.getValue().toString()))) {
-                errorMessage = "The " + row + "row and the " + column + " column can not be empty";
+                errorMessage = "Missing mandatory data in Row " + row + " Column " + column;
                 logger.error(errorMessage);
-                errorMap.put(column, errorMessage);
+                errorMap.put(row + "--" + column, errorMessage);
             } else {
                 if (cell.getValue().toString().length() > Integer.parseInt(length)) {
-                    errorMessage = "The length of the " + row + " row and the " + column + " column is greater than" + length;
+                    errorMessage = "The maximum word length exceeds " + length + " : \"" + cell.getValue().toString() + "\" in Row " + row + " Column " + column;
                     logger.error(errorMessage);
-                    errorMap.put(column, errorMessage);
+                    errorMap.put(row + "--" + column, errorMessage);
                 } else {
-                    //  System.out.println(cell.getValue().toString() + " , ");
                     columnMap.put(cell.getRow(), cell.getValue().toString());
                 }
             }
         } else {
-
             if (cell != null && cell.getValue() != null) {
-
                 if (cell.getValue().toString().length() > Integer.parseInt(length)) {
-                    errorMessage = "The length of the " + row + " row and the " + column + " column is greater than " + length;
+                    errorMessage = "The maximum word length exceeds " + length + " : \"" + cell.getValue().toString() + "\" in Row " + row + " Column " + column;
                     logger.error(errorMessage);
-                    errorMap.put(column, errorMessage);
+                    errorMap.put(row + "--" + column, errorMessage);
                 } else {
                     columnMap.put(cell.getRow(), cell.getValue().toString());
                 }
@@ -246,11 +266,11 @@ public class SfcSubLoanService {
 
     @Transactional(rollbackFor = Exception.class)
     public void saveSubLoanMap(LinkedHashMap<Integer, LinkedHashMap<Integer, String>> subLoanMap, LinkedHashMap<Integer, LinkedHashMap<String, String>> dataMigrationMap, HttpServletResponse response) throws IOException {
-        List<SubLoan> subLoanList = new ArrayList<>();
         StringBuilder insertSql = new StringBuilder();
         try {
-
-            insertSql.append("INSERT INTO SL_T_LOAN_MASTER (");
+            insertSql.append("INSERT INTO ");
+            insertSql.append(dataMigrationMap.get(2).get("tableName"));
+            insertSql.append(" (");
             int dataMigrationSize = dataMigrationMap.size();
             int i = 0;
             for (Map.Entry<Integer, LinkedHashMap<String, String>> dataMigrationEntry : dataMigrationMap.entrySet()) {
@@ -324,9 +344,9 @@ public class SfcSubLoanService {
                 scriptList.add(script);
             }
 
-
-
             StringBuilder sb = new StringBuilder();
+            sb.append("--Run successful !!!" + "\n\n");
+            sb.append("--Total number of success records : " + scriptList.size() + "\n\n");
             for (String script : scriptList) {
                 sb.append(script).append("\n");
             }
@@ -436,7 +456,8 @@ public class SfcSubLoanService {
         if (cell != null && cell.getValue() != null) {
 
             if (cell.getValue().toString().length() > length) {
-                errorMessage = "The length of the " + row + " row and the " + column + " column is greater than " + length;
+                // errorMessage = "The length of the " + row + " row and the " + column + " column is greater than " + length;
+                errorMessage = "The maximum word length exceeds " + length + " : \"" + cell.getValue().toString() + "\" in Row " + row + " Column " + column;
 
                 logger.error(errorMessage);
                 hangErrorMap.put(column, errorMessage);
